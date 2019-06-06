@@ -11,13 +11,15 @@ import java.util.Date;
 public class MainController {
 
     @RequestMapping("/")
-    public String index(Model model){
-        model.addAttribute("date", DateUtils.dateToStringByFormat(DateUtils.FORMAT3,new Date()));
+    public String index(){
         return "index";
     }
     @RequestMapping("/login")
-    public String login(Model model){
-
+    public String login(Model model,String username,String password){
+        if (username!=null && password!=null &&username.equals("admin") && password.equals("123456")){
+            return "main/table";
+        }
+        model.addAttribute("msg","账号或密码错误");
 
         return "index";
     }

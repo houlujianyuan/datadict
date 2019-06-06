@@ -1,3 +1,4 @@
 # datadict
 ## 数据字典
-springboot
+1. springboot
+2. jdk1.8
