@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="projectName" value="datadict" />
+	<property name="logPath" value="/qingke/logs/datadict" />
+	<contextName>${logPath}</contextName>
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logPath}/${projectName}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logPath}/${projectName}.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+			<maxHistory>365</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+			<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<MaxFileSize>30MB</MaxFileSize>
+			</TimeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>DENY</onMatch>
+			<onMismatch>ACCEPT</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logPath}/${projectName}.error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logPath}/${projectName}.error.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+			<maxHistory>365</maxHistory>
+			<totalSizeCap>5GB</totalSizeCap>
+			<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<MaxFileSize>30MB</MaxFileSize>
+			</TimeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+	</appender>
+
+	<!-- 异步输出，异步的log片段必须在同步段后面，否则不起作用 -->
+	<appender name="ASYNC_rollingFile" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>1024</queueSize>
+		<appender-ref ref="rollingFile" />
+	</appender>
+
+
+	<!-- 异步输出，异步的log片段必须在同步段后面，否则不起作用 -->
+	<appender name="ASYNC_errorAppender" class="ch.qos.logback.classic.AsyncAppender">
+		<!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+		<discardingThreshold>0</discardingThreshold>
+		<!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+		<queueSize>1024</queueSize>
+		<!-- 添加附加的appender,最多只能添加一个 -->
+		<appender-ref ref="errorAppender" />
+	</appender>
+
+
+
+	<!-- 全局配置打印所有的sql mybatis-config.xml的prefix的值 -->
+	<logger name="mybatis_sql" level="DEBUG" />
+
+
+	<!-- 第三方jar的日志，业务不需要，统一设置为ERROR级别 -->
+	<logger name="org.springframework.data" level="ERROR" />
+	<logger name="org.kie" level="ERROR" />
+	<logger name="org.drools" level="ERROR" />
+
+	<!-- dev设置DEBUG,pro设置INFO -->
+	<root level="INFO">
+		<appender-ref ref="console" />
+		<appender-ref ref="ASYNC_rollingFile" />
+		<appender-ref ref="ASYNC_errorAppender" />
+	</root>
+
+</configuration>

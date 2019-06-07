@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+xmlns:task="http://www.springframework.org/schema/task"
+xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/task
+	http://www.springframework.org/schema/task/spring-task-3.2.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop 
+  		http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<description>spring-context</description>
+
+	<!-- 基于主机方式配置Spring的配置文件,为了你的系统能够识别相应的注解 -->
+	<context:annotation-config />
+
+	<!-- 该命名空间会交给org.springframework.aop.config.AopNamespaceHandler处理 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!-- 定义扫描根路径为com.qk365.portal，扫目录所有子包 ,完成Bean创建和自动依赖注入的功能 -->
+	<context:component-scan base-package="com.qk365;com.qk365.**">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+	</context:component-scan>
+
+
+<task:annotation-driven /> <!--允许@Async-->
+
+
+
+
+
+
+
+      
+
+
+    
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+
+	<!-- MyBatis配置 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:/config/mybatis-config.xml" />  
+		<property name="dataSource" ref="dataSource" />
+		<property name="typeAliasesPackage" value="com.qk365.datadict.po.*"/>
+		<property name="mapperLocations" value="classpath*:mapper/*Mapper.xml" />
+	</bean>
+	
+	<!-- 配置扫描Dao接口包,动态实现Dao接口，注入到spring容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!-- 给出需要扫描Dao接口包 -->
+        <property name="basePackage" value="com.qk365.datadict.dao"/>
+    </bean>
+	
+	<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.isea533.mybatis.mapper"/>
+        <property name="properties">
+            <value>
+                mappers=tk.mybatis.mapper.common.Mapper
+            </value>
+        </property>
+    </bean>
+	
+</beans>

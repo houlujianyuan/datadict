@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+    <title>欢迎使用数据字典</title>
+    <link rel="stylesheet" href="../css/index.css" />
+    <script  src="http://libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+    <style>
+        body,html{height:100%;}
+        .login
+        {   width:35%;
+            height:45%;
+            margin:0 auto;
+            position:absolute ;
+            left:50%;
+            top:50%;
+            text-align: center;
+            padding-top: 5%;
+            transform:translate(-50%,-50%);
+
+        }
+        .whole
+        {
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+
+    <script>
+        function show() {
+            var date = new Date(); //日期对象
+            var now = "";
+            now = date.getFullYear()+"年"; //读英文就行了
+            now = now + (date.getMonth()+1)+"月"; //取月的时候取的是当前月-1如果想取当前月+1就可以了
+            now = now + date.getDate()+"日";
+            now = now + date.getHours()+"时";
+            now = now + date.getMinutes()+"分";
+            now = now + date.getSeconds()+"秒";
+            document.getElementById("nowDiv").innerHTML = now; //div的html是now这个字符串
+            setTimeout("show()",1000); //设置过1000毫秒就是1秒，调用show方法
+        }
+    </script>
+</head>
+
+
+
+<body onload="show()">
+<div class="whole" style="background: url(../img/1.jpg) no-repeat fixed bottom center;background-size: cover;">
+    <div class="login">
+        <h1 style="text-align:center;color: #ffefef;font-family: 华文楷体">数据字典</h1>
+        <h4 style="text-align:center;color: #ffefef;"><span  id="nowDiv"></span></h4>
+        <form class="uk-form" action="/register" method="post" >
+
+            <!-- <p><label for="id_username">用户名:</label> <input id="id_username" maxlength="254" name="username" type="text" /></p>
+<p><label for="id_password">密码:</label> <input id="id_password" name="password" type="password" /></p> -->
+            <td th:switch="${msg}">
+                <span th:case="0"></span>
+                <span th:case="1"><font color="red">该账号已注册，请登录</font></span>
+            </td>
+            <div class="uk-form-row">
+                <div class="uk-form-controls">
+                    <input type="text" id="form-h-it" class="uk-form-width-medium" placeholder="请输入用户名" name="username">
+                </div>
+            </div>
+
+            <div class="uk-form-row">
+                <div class="uk-form-controls ">
+                    <input type="password" class="uk-form-width-medium" id="form-h-ip" placeholder="请输入密码" name="password">
+                </div>
+            </div>
+
+            <div class="uk-form-row ">
+                <button class="uk-button uk-button-primary uk-form-width-medium" type="submit">注册</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+</body></html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html xmlns:th="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     
     <title>欢迎使用数据字典</title>
@@ -50,11 +50,14 @@
         <div class="login">
             <h1 style="text-align:center;color: #ffefef;font-family: 华文楷体">数据字典</h1>
                 <h4 style="text-align:center;color: #ffefef;"><span  id="nowDiv"></span></h4>
-                    <form class="uk-form" action="/login" method="post" enctype="multipart/form-data">
+                    <form class="uk-form" action="/login" method="post" >
                         
                         <!-- <p><label for="id_username">用户名:</label> <input id="id_username" maxlength="254" name="username" type="text" /></p>
 <p><label for="id_password">密码:</label> <input id="id_password" name="password" type="password" /></p> -->
-
+                        <td th:switch="${msg}">
+                            <span th:case="0"></span>
+                            <span th:case="1"><font color="red">账号或密码错误！</font></span>
+                        </td>
         <div class="uk-form-row">
            <div class="uk-form-controls">
                <input type="text" id="form-h-it" class="uk-form-width-medium" placeholder="请输入用户名" name="username">
@@ -71,7 +74,7 @@
             <button class="uk-button uk-button-primary uk-form-width-medium" type="submit">登录</button>
         </div>
                         <div class="uk-form-row ">
-            <a class="uk-button uk-button-primary uk-form-width-medium" href="">注册</a>
+            <a class="uk-button uk-button-primary uk-form-width-medium" href="/toRegister">注册</a>
         </div>
                     </form>
         </div>
