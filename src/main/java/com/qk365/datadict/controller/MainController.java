@@ -21,7 +21,7 @@ public class MainController {
     public String index(){
         return "index";
     }
-    @RequestMapping("/login")
+    @RequestMapping("/main")
     public String login(Model model, Users users){
         List<Users> list = userService.selectList(users);
         if (list !=null && list.size() >0 ){
@@ -40,6 +40,7 @@ public class MainController {
     }
     @RequestMapping("/register")
     public String register(Model model, Users users){
+        users.setPassword(null);
         List<Users> list = userService.selectList(users);
         if (list !=null && list.size() >0 ){
             model.addAttribute("msg",1);
