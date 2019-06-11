@@ -1,0 +1,31 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body>
+    <div class="breadcrumbs-box">
+            <ul class="breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a></a>
+            </li>
+        </ul>
+    </div>
+    <div  style="overflow:scroll;">
+      <input type="hidden" id="cols" th:value="${cols}"/>
+      <input type="hidden" id="tableName" th:value="${tableName}"/>
+      
+      <!-- 查询条件 -->
+         	 
+      <div class="table-menu"  style="width:100%">
+      	<div class="table-content use-stamp">
+		  <table id="tableList" lay-filter="filterTable"></table> <!--列表-->
+	   </div>
+     </div>
+     	
+	</div>
+	<div th:include="include :: footer"></div>
+	<script src="/common/list.js" th:src="@{/common/list.js}"></script>
+	<script src="/js/timeTool.js" th:src="@{/js/timeTool.js}"></script>
+</body>
+</html>

@@ -33,7 +33,7 @@ xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org
 
 <task:annotation-driven /> <!--允许@Async-->
 	<!-- datasource-start -->
-	<bean id="commonDataSource" abstract="true" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+<!--	<bean id="commonDataSource" abstract="true" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 
 		<property name="filters" value="stat" />
 
@@ -58,7 +58,7 @@ xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org
 
 		<property name="poolPreparedStatements" value="false" />
 
-		<property name="maxOpenPreparedStatements" value="20" />
+		&lt;!&ndash;<property name="maxOpenPreparedStatements" value="20" />&ndash;&gt;
 
 		<property name="removeAbandoned" value="true" />
 
@@ -80,7 +80,6 @@ xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org
 	</bean>
 
 	<bean id="SecondDataSource"  parent="commonDataSource">
-		<property name="connectionInitSqls" value="set names utf8mb4;" />
 		<property name="driverClassName" value="${jdbc.driverClassName.second}"/>
 
 		<property name="url" value="${jdbc.url.second}"/>
@@ -92,7 +91,6 @@ xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org
 	</bean>
 
 	<bean id="ThirdDataSource"  parent="commonDataSource">
-		<property name="connectionInitSqls" value="set names utf8mb4;" />
 		<property name="driverClassName" value="${jdbc.driverClassName.third}"/>
 
 		<property name="url" value="${jdbc.url.third}"/>
@@ -107,8 +105,8 @@ xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org
 		<property name="targetDataSources">
 			<map key-type="java.lang.String">
 				<entry key="sqlite" value-ref="FirstDataSource"></entry>
-				<entry key="mysql" value-ref="SecondDataSource"></entry>
-				<entry key="sqlserver" value-ref="ThirdDataSource"></entry>
+				<entry key="sqlserver" value-ref="SecondDataSource"></entry>
+				<entry key="mysql" value-ref="ThirdDataSource"></entry>
 			</map>
 		</property>
 		<property name="defaultTargetDataSource" ref="FirstDataSource" />
@@ -117,7 +115,7 @@ xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org
 	<bean id="transactionManager"
 		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
 		  p:dataSource-ref="SecondDataSource">
-	</bean>
+	</bean>-->
 
 <!--
 	&lt;!&ndash; 配置 spring 的 JdbcTemplate &ndash;&gt;

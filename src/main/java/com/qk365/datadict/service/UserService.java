@@ -7,7 +7,7 @@ import java.util.List;
 public interface UserService {
 
 
-    void insertUser(Users users);
-    Users selectOne(Users users);
-    List<Users> selectList(Users users);
+    void insertUser(Users users,String dbKey);
+    Users selectOne(Users users,String dbKey);
+    List<Users> selectList(Users users,String dbKey);
 }

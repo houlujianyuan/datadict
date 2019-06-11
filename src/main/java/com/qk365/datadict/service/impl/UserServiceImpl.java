@@ -1,5 +1,6 @@
 package com.qk365.datadict.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.qk365.datadict.dao.UserMapper;
 import com.qk365.datadict.po.Users;
 import com.qk365.datadict.service.UserService;
@@ -17,17 +18,20 @@ public class UserServiceImpl implements UserService {
     @Autowired(required=true)
     private UserMapper userMapper;
     @Override
-    public void insertUser(Users users) {
+  /*  @DS("#dbKey")*/
+    public void insertUser(Users users,String dbKey) {
         userMapper.insertSelective(users);
     }
 
     @Override
-    public Users selectOne(Users users) {
+   /* @DS("#dbKey")*/
+    public Users selectOne(Users users,String dbKey) {
         return userMapper.selectOne(users);
     }
 
     @Override
-    public List<Users> selectList(Users users) {
+/*    @DS("#dbKey")*/
+    public List<Users> selectList(Users users,String dbKey) {
         return userMapper.select(users);
     }
 }

@@ -1,0 +1,38 @@
+<html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<META http-equiv="Content-Type" content="text/html;  charset=utf-8"></META>
+	<title>数据库字典</title>
+	<link href="/css/css.css" rel="stylesheet" type="text/css">
+</head>
+<body leftMargin=0 topMargin=0 marginheight="0" marginwidth="0">
+	<div style="font-family: 'trebuchet MS', 'Lucida sans', Arial; font-size: 12px; color: #000000; font-weight: bold; word-break: break-all; overflow: auto;">
+		<div style="padding-top: 3px; padding-bottom: 3px;padding-left: 10px">
+		       查询：<input type="text" id="keyWord" style="width:200px">
+		</div>
+		<div class="tab" style="padding-top: 3px; padding-bottom: 3px;padding-left: 10px" th:each="table,tableStat: ${list}" th:id="'info'+${tableStat.index}">
+				<img src="/img/topItem_col.gif">&nbsp;
+				<a class="a"  th:href="@{'/table/'+${table.name}+'/'+${table.id} }" target="mainFrame"  th:id="'tablename'+${tableStat.index}" th:text="${table.name}+' '+${table.explain}"></a>
+		</div>
+    </div>
+    <script src="/js/jquery-2.0.3.min.js" th:src="@{/js/jquery-2.0.3.min.js}"></script>
+    <script type="text/javascript">
+     $(document).ready(function () {
+    	   $('#keyWord').bind('input propertychange', function() {    
+    		   var keyWord=$('#keyWord').val().toUpperCase();
+    		   var tab=$(".tab");
+    		   var len=tab.length;
+    		   for(i=0;i<len;i++){
+    			   var tableName=$("#tablename"+i).text().toUpperCase();
+    			   if(tableName.indexOf(keyWord)>-1){
+    				   $("#info"+i).show();
+    			   }else{
+    				   $("#info"+i).hide();
+    			   }
+    		   }
+    		   
+    		});  
+       });
+    </script>
+</body>
+</html>

@@ -46,7 +46,7 @@
 
 
 <body onload="show()">
-    <div class="whole" style="background: url(../img/1.jpg) no-repeat fixed bottom center;background-size: cover;">
+    <div class="whole" style="background: url(/img/1.jpg) no-repeat fixed bottom center;background-size: cover;">
         <div class="login">
             <h1 style="text-align:center;color: #ffefef;font-family: 华文楷体">数据字典</h1>
                 <h4 style="text-align:center;color: #ffefef;"><span  id="nowDiv"></span></h4>
@@ -60,18 +60,18 @@
                         </td>
         <div class="uk-form-row">
            <div class="uk-form-controls">
-               <input type="text" id="form-h-it" class="uk-form-width-medium" placeholder="请输入用户名" name="username">
+               <input type="text" id="form-h-it" class="uk-form-width-medium" required placeholder="请输入用户名" name="username">
            </div>
         </div>
 
         <div class="uk-form-row">
             <div class="uk-form-controls ">
-                <input type="password" class="uk-form-width-medium" id="form-h-ip" placeholder="请输入密码" name="password">
+                <input type="password" class="uk-form-width-medium" id="form-h-ip" required placeholder="请输入密码" name="password">
             </div>
         </div>
 
         <div class="uk-form-row ">
-            <button class="uk-button uk-button-primary uk-form-width-medium" type="submit">登录</button>
+            <button class="uk-button uk-button-primary uk-form-width-medium"  type="submit">登录</button>
         </div><!--
                         <div class="uk-form-row ">
             <a class="uk-button uk-button-primary uk-form-width-medium" href="/toRegister">注册</a>
