@@ -10,13 +10,14 @@
 </head>
 
 <body>
+<input type="hidden" id="dbKey" name="dbKey" th:value="${dbKey}" >
 <div class="layui-form">
         <legend><input type="hidden" th:value="${tablename}" id="tableName"/>
             <div id='tableName' style="padding: 5px; margin-top: 10px; font-size: 14px; font-family: 'trebuchet MS', 'Lucida sans', Arial;">
                 <!--
                 <a th:href="@{'/list/'+${tablename}}" target="_blank"><span th:text="${tablename}"></span></a>&nbsp;&nbsp;
                 -->
-                <a th:href="@{'/initList?id='+${id}+'&tableName='+${tablename} }" target="_blank"><span th:text="${tablename}"></span></a>&nbsp;&nbsp;
+                <a th:href="@{'/initList?id='+${id}+'&tableName='+${tablename} +'&dbKey='+${dbKey}}" target="_blank"><span th:text="${tablename}"></span></a>&nbsp;&nbsp;
 
                 <span th:text="${explain}" ondblclick="editTable(this)"></span>
 

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * @author 6154876
+ */
 @Service
 public class MySqlServiceImpl implements MySqlService {
     @Autowired
@@ -21,14 +24,14 @@ public class MySqlServiceImpl implements MySqlService {
 
     @Override
     @DS("#dbKey")
-    public List<Map<String, Object>> findTableName(String dbKey) {
-        return mysqlMapper.findTableName();
+    public List<Map<String, Object>> findTableName(String dbKey,String dbName) {
+        return mysqlMapper.findTableName(dbName);
     }
 
     @Override
     @DS("#dbKey")
-    public List<TableInfo> findTableInfo(Long id,String dbKey) {
-        return mysqlMapper.findTableInfo(id);
+    public List<TableInfo> findTableInfo(String dbKey , String tableName) {
+        return mysqlMapper.findTableInfo(dbKey,tableName);
     }
 
     @Override

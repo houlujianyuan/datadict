@@ -11,14 +11,14 @@ public interface MySqlService {
      * 查询数据库表信息
      * @return
      */
-    List<Map<String,Object>> findTableName(String dbKey);
+    List<Map<String,Object>> findTableName(String dbKey,String dbName);
 
     /**
      * 查询表字段信息
      * @param id
      * @return
      */
-    List<TableInfo> findTableInfo(Long id, String dbKey);
+    List<TableInfo> findTableInfo(String dbKey , String tableName);
 
     /**
      * 修改表说明信息

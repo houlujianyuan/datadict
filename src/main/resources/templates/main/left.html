@@ -6,13 +6,14 @@
 	<link href="/css/css.css" rel="stylesheet" type="text/css">
 </head>
 <body leftMargin=0 topMargin=0 marginheight="0" marginwidth="0">
+<input type="hidden" id="dbKey" name="dbKey" th:value="${dbKey}" >
 	<div style="font-family: 'trebuchet MS', 'Lucida sans', Arial; font-size: 12px; color: #000000; font-weight: bold; word-break: break-all; overflow: auto;">
 		<div style="padding-top: 3px; padding-bottom: 3px;padding-left: 10px">
 		       查询：<input type="text" id="keyWord" style="width:200px">
 		</div>
 		<div class="tab" style="padding-top: 3px; padding-bottom: 3px;padding-left: 10px" th:each="table,tableStat: ${list}" th:id="'info'+${tableStat.index}">
 				<img src="/img/topItem_col.gif">&nbsp;
-				<a class="a"  th:href="@{'/table/'+${table.name}+'/'+${table.id} }" target="mainFrame"  th:id="'tablename'+${tableStat.index}" th:text="${table.name}+' '+${table.explain}"></a>
+				<a class="a"  th:href="@{'/table/'+${table.name}+'/'+${table.id}+'?dbKey='+${dbKey}}" target="mainFrame"  th:id="'tablename'+${tableStat.index}" th:text="${table.name}+' '+${table.explain}"></a>
 		</div>
     </div>
     <script src="/js/jquery-2.0.3.min.js" th:src="@{/js/jquery-2.0.3.min.js}"></script>
@@ -31,7 +32,9 @@
     			   }
     		   }
     		   
-    		});  
+    		});
+		/*var dbKey =  $("#dbKey", parent.document)
+		 $("#dbKey").val(dbKey)*/
        });
     </script>
 </body>

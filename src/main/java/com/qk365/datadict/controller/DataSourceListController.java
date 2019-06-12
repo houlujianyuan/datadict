@@ -51,7 +51,7 @@ public class DataSourceListController {
         DynamicRoutingDataSource dd = (DynamicRoutingDataSource) dataSource;
         DataSourceProperty t = new DataSourceProperty();
         t.setDriverClassName(dataSourceList.getDriverName());
-        /*t.setPollName("zxtest");*/
+        t.setPollName(dataSourceList.getDatabaseName());
         t.setUsername(dataSourceList.getUsername());
         t.setPassword(dataSourceList.getPassword());
         t.setUrl(dataSourceList.getUrl());

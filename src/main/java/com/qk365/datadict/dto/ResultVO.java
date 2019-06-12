@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 返回值对象
  */
-public class ResultVO implements Serializable {
+public class ResultVO<T> implements Serializable {
 
 	private static final long serialVersionUID = -9128600495587366380L;
 
@@ -16,17 +16,17 @@ public class ResultVO implements Serializable {
 
 	protected int result; // 返回状态
 	protected String message = ""; // 返回信息
-	protected Object data; // 返回数据
+	protected T  data; // 返回数据
     
 	public ResultVO(){
 		
 	}
-
-	public ResultVO(int result, String message, Object data) {
+	public ResultVO(int result,String message,T data) {
 		this.result = result;
 		this.message =message;
 		this.data=data;
 	}
+
 
 	public int getResult() {
 		return result;
@@ -44,12 +44,11 @@ public class ResultVO implements Serializable {
 		this.message = message;
 	}
 
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
-
 }

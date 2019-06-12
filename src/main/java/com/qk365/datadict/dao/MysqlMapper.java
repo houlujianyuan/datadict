@@ -8,14 +8,14 @@ import java.util.Map;
 
 public interface MysqlMapper{
 
-    List<Map<String,Object>> findTableName();
+    List<Map<String,Object>> findTableName(@Param("dbName") String dbName);
 
     /**
      * 查询表字段信息
      * @param id
      * @return
      */
-    List<TableInfo> findTableInfo(@Param("id") Long id);
+    List<TableInfo> findTableInfo(@Param("dbKey") String dbKey,@Param("tableName") String tableName);
 
     /**
      * 修改表说明信息

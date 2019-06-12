@@ -4,7 +4,10 @@
 	
 	<!-- 查询所有表名 -->
 	<select id="findList" resultType="java.util.Map">
-	    select  * from ${tableName}
+	    select  * from ${query.tableName} where  1 = 1
+	    <if test="query.screen !=null and  query.screen != ''">
+			and ${query.screen}
+		</if>
 	</select>
 	
 </mapper>

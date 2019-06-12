@@ -7,10 +7,11 @@
 	    <!--
 	    select t.name,t.crdate from sysobjects t where xtype='u' ORDER BY t.name
 	    -->
-	    select t.name,CONVERT(NVARCHAR(100),ifnull(g.[value],'')) AS explain,t.id  from sysobjects t 
-         left join sys.extended_properties g
-         on (t.id = g.major_id AND g.minor_id = 0) 
-         where t.xtype='u' ORDER BY t.name;
+        select table_name as name, table_comment as comment, table_rows as id
+        from information_schema.tables
+        where table_schema = #{dbName}
+        and table_type = 'base table'
+        order by table_name
 	</select>
 	
 	<select id="findTableNameExplain" resultType="java.util.Map">
@@ -23,6 +24,7 @@
     <result column="idx" jdbcType="INTEGER" property="idx" />
     <result column="columnName" jdbcType="VARCHAR" property="columnName" />
     <result column="explain" jdbcType="VARCHAR" property="explain" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="dataType" jdbcType="VARCHAR" property="dataType" />
     <result column="length" jdbcType="INTEGER" property="length" />
     <result column="decimalDigits" jdbcType="INTEGER" property="decimalDigits" />
@@ -33,65 +35,22 @@
   </resultMap>
   
  <select id="findTableInfo" resultMap="BaseResultMap">
-	SELECT   
-        col.colorder AS idx ,
-        col.name AS columnName ,
-        ifnull(ep.[value], '') AS explain ,
-        t.name AS dataType,
-        col.length AS length ,
-        ifnull(COLUMNPROPERTY(col.id, col.name, 'Scale'), 0) AS decimalDigits ,
-        CASE WHEN COLUMNPROPERTY(col.id, col.name, 'IsIdentity') = 1 THEN '1'
-             ELSE ''
-        END AS identification ,
-        CASE WHEN EXISTS ( SELECT   1
-                           FROM     dbo.sysindexes si
-                                    INNER JOIN dbo.sysindexkeys sik ON si.id = sik.id
-                                    AND si.indid = sik.indid
-                                    INNER JOIN dbo.syscolumns sc ON sc.id = sik.id
-                                    AND sc.colid = sik.colid
-                                    INNER JOIN dbo.sysobjects so ON so.name = si.name
-                                    AND so.xtype = 'PK'
-                           WHERE    sc.id = col.id
-                                    AND sc.colid = col.colid ) THEN '1'
-             ELSE ''
-        END AS pk ,
-         CASE WHEN col.ifnullable = 1 THEN '1' ELSE '' END AS empty,
-        ifnull(comm.text, '') AS defaultValue
-        FROM    dbo.syscolumns col
-        LEFT  JOIN dbo.systypes t ON col.xtype = t.xusertype
-        inner JOIN dbo.sysobjects obj ON col.id = obj.id
-        AND obj.xtype = 'U'
-        AND obj.status >= 0
-        LEFT  JOIN dbo.syscomments comm ON col.cdefault = comm.id
-        LEFT  JOIN sys.extended_properties ep ON col.id = ep.major_id
-        AND col.colid = ep.minor_id
-        AND ep.name = 'MS_Description'
-        LEFT  JOIN sys.extended_properties epTwo ON obj.id = epTwo.major_id
-        AND epTwo.minor_id = 0
-        AND epTwo.name = 'MS_Description'
-        WHERE   obj.id = #{id} 
-        ORDER BY col.colorder ;
+
+        select
+        ordinal_position as idx,
+        column_name as columnName,
+        column_comment as comment,
+        data_type as dataType,
+        0 as length,
+        is_nullable as empty,
+        column_default as defaultValue,
+        column_key as pk,
+        extra as identification
+        from information_schema.columns
+
+        where table_schema =  #{dbKey}
+        and table_name = #{tableName}
 	</select>
-	 
-	<!--
-	         新增表描述信息
-	   EXECUTE sp_addextendedproperty N'MS_Description', '账单记录表', N'user', N'dbo', N'table', N'bill_manage', NULL, NULL
-	         修改表描述信息
-	   EXECUTE sp_updateextendedproperty   N'MS_Description', '账单记录表', N'user', N'dbo', N'table', N'bill_manage', NULL, NULL
-	         查询表描述信息
-	   select  a.name AS 表名, CONVERT(NVARCHAR(100),ifnull(g.[value],'-')) AS 说明  from
-       sys.tables a left join sys.extended_properties g on (a.object_id = g.major_id AND g.minor_id = 0) where a.name = 'Bill_Manage'
-	 
-	        为字段a1添加描述信息
-	   EXECUTE sp_addextendedproperty N'MS_Description', '姓名', N'user', N'dbo', N'table', N'表', N'column', N'a1'
-	        为字段a2添加描述信息
-	   EXECUTE sp_addextendedproperty N'MS_Description', '性别', N'user', N'dbo', N'table', N'表', N'column', N'a2'
-	        更新表中列a1的描述属性：
-	   EXEC sp_updateextendedproperty 'MS_Description','字段1','user',dbo,'table','表','column',a1
-	
-	          删除表中列a1的描述属性：
-	   EXEC sp_dropextendedproperty 'MS_Description','user',dbo,'table','表','column',a1
-	 -->
 	 
 	 <select id="addTableExplain"  statementType="CALLABLE">
         EXECUTE sp_addextendedproperty   N'MS_Description', '${explain}', N'user', N'dbo', N'table', N'${tableName}', NULL, NULL   
