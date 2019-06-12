@@ -10,6 +10,7 @@ import com.qk365.datadict.dao.DataSourceListMapper;
 import com.qk365.datadict.dto.*;
 import com.qk365.datadict.po.DataSourceList;
 import com.qk365.datadict.po.TableInfo;
+import com.qk365.datadict.po.Users;
 import com.qk365.datadict.service.CommonService;
 import com.qk365.datadict.service.MySqlService;
 import com.qk365.datadict.service.SqlServerService;
@@ -56,9 +57,11 @@ public class TableController {
     String left(Model model, HttpServletRequest request) {
         List<Map<String, Object>> list = new ArrayList<>();
         String dbKey = request.getParameter("dbKey");
+        Users users = (Users) request.getSession().getAttribute("user");
         //根据dbkey查询数据库类型
         DataSourceList dataSourceList = new DataSourceList();
         dataSourceList.setDatabaseName(dbKey);
+        dataSourceList.setUserId(users.getId());
         DataSourceList dataSourceList1 = dataSourceListMapper.selectOne(dataSourceList);
         //mysql
         if (dataSourceList1.getType() == 1) {
@@ -123,9 +126,9 @@ public class TableController {
     @GetMapping("/table/{tablename}/{id}")
     String table(@PathVariable("tablename") String tablename,
                  @PathVariable("id") String id,
-                 Model model, String dbKey) {
+                 Model model, String dbKey,HttpServletRequest request) {
         String explain = "请输入表说明";
-        Integer dataType = this.findDbType(dbKey);
+        Integer dataType = this.findDbType(dbKey,request);
         if (tablename.equals("1") && id.equals("1")) {
             //默认表
             if (dataType == 1) {
@@ -260,8 +263,8 @@ public class TableController {
 
     @GetMapping("/initList")
     String initList(@RequestParam("id") String id, @RequestParam("tableName") String tableName, Model model
-            , @RequestParam("dbKey") String dbKey) {
-        Integer dataType = this.findDbType(dbKey);
+            , @RequestParam("dbKey") String dbKey,HttpServletRequest request) {
+        Integer dataType = this.findDbType(dbKey,request);
         List<TableInfo> list = new ArrayList<>();
         if (dataType == 1) {
             list = mySqlService.findTableInfo(dbKey,tableName);
@@ -441,10 +444,12 @@ public class TableController {
         return filename;
     }
 
-    private Integer findDbType(String dbKey) {
+    private Integer findDbType(String dbKey,HttpServletRequest request) {
         //根据dbkey查询数据库类型
+        Users users = (Users) request.getSession().getAttribute("user");
         DataSourceList dataSourceList = new DataSourceList();
         dataSourceList.setDatabaseName(dbKey);
+        dataSourceList.setUserId(users.getId());
         DataSourceList dataSourceList1 = dataSourceListMapper.selectOne(dataSourceList);
         return dataSourceList1.getType();
     }

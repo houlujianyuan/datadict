@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.util.List;
 
@@ -37,7 +38,9 @@ public class DataSourceListController {
     }
 
     @RequestMapping("/addDs")
-    public String addDs(Model model, DataSourceList dataSourceList) {
+    public String addDs(Model model, DataSourceList dataSourceList,HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Users users = (Users) session.getAttribute("user");
         if (dataSourceList.getType() == 1){
             dataSourceList.setDriverName("com.mysql.cj.jdbc.Driver");
         }else if (dataSourceList.getType() == 2){
@@ -45,7 +48,7 @@ public class DataSourceListController {
         }else if (dataSourceList.getType() == 3){
             dataSourceList.setDriverName("org.sqlite.JDBC");
         }
-
+        dataSourceList.setUserId(users.getId());
         dataSourceListMapper.insertSelective(dataSourceList);
         //将数据源添加至进程
         DynamicRoutingDataSource dd = (DynamicRoutingDataSource) dataSource;
@@ -60,17 +63,19 @@ public class DataSourceListController {
 
         //查询用户所有数据源
         DataSourceList dataSourceList2= new DataSourceList();
-        dataSourceList2.setUserId(3);
+        dataSourceList2.setUserId(users.getId());
         List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList2);
         model.addAttribute("dataSourceLists", dataSourceLists);
         return "dataSourceList/dataSourceList";
     }
 
     @RequestMapping("/dataSourceList")
-    public String dataSourceList(Model model) {
+    public String dataSourceList(Model model,HttpServletRequest request) {
         //查询用户所有数据源
+        HttpSession session = request.getSession();
+        Users users = (Users) session.getAttribute("user");
         DataSourceList dataSourceList = new DataSourceList();
-        dataSourceList.setUserId(3);
+        dataSourceList.setUserId(users.getId());
         List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList);
         model.addAttribute("dataSourceLists", dataSourceLists);
         return "dataSourceList/dataSourceList";
@@ -79,8 +84,10 @@ public class DataSourceListController {
     @RequestMapping("/changeDbKey")
     public String changeDbKey(Model model, HttpServletRequest request) {
         //查询用户所有数据源
+        HttpSession session = request.getSession();
+        Users users = (Users) session.getAttribute("user");
         DataSourceList dataSourceList2= new DataSourceList();
-        dataSourceList2.setUserId(3);
+        dataSourceList2.setUserId(users.getId());
         List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList2);
         model.addAttribute("dataSourceLists", dataSourceLists);
         String dbKey = request.getParameter("dbKey");
