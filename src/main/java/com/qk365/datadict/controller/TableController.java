@@ -127,27 +127,42 @@ public class TableController {
     @GetMapping("/table/{tablename}/{id}")
     String table(@PathVariable("tablename") String tablename,
                  @PathVariable("id") String id,
-                 Model model, String dbKey,HttpServletRequest request) {
+                 Model model, String dbKey, HttpServletRequest request) {
         String explain = "请输入表说明";
-        Integer dataType = this.findDbType(dbKey,request);
-        if (tablename.equals("1") && id.equals("1")) {
-            //默认表
-            if (dataType == 1) {
-                //mysql
-                List<Map<String, Object>> tableList = mySqlService.findTableName(dbKey, dbKey);
+        Integer dataType = this.findDbType(dbKey, request);
+
+        //默认表
+        if (dataType == 1) {
+            //mysql
+            List<Map<String, Object>> tableList = mySqlService.findTableName(dbKey, dbKey);
+            if (tablename.equals("1") && id.equals("1")) {
                 tablename = tableList.get(0).get("name") + "";
                 id = tableList.get(0).get("id") + "";
                 explain = tableList.get(0).get("comment") + "";
+            } else {
+                for (Map<String, Object> map : tableList) {
+                    if (map.get("name").equals(tablename)) {
+                        explain = map.get("comment") + "";
+                    }
+                }
+            }
 
-            } else if (dataType == 2) {
-                //sqlServer
-                List<Map<String, Object>> tableList = sqlServerService.findTableName(dbKey);
+        } else if (dataType == 2) {
+            //sqlServer
+            List<Map<String, Object>> tableList = sqlServerService.findTableName(dbKey);
+            if (tablename.equals("1") && id.equals("1")) {
                 tablename = tableList.get(0).get("name") + "";
                 id = tableList.get(0).get("id") + "";
                 explain = tableList.get(0).get("explain") + "";
+            } else {
+                for (Map<String, Object> map : tableList) {
+                    if (map.get("name").equals(tablename)) {
+                        explain = map.get("explain") + "";
+                    }
+                }
             }
-
         }
+
         List<TableInfo> list = new ArrayList<>();
         if (dataType == 1) {
             list = mySqlService.findTableInfo(dbKey, tablename);
@@ -233,7 +248,7 @@ public class TableController {
         QueryInfoDto query = new QueryInfoDto();
         query.setTableName(tableName);
 
-        List<Map<String, Object>> list = commonService.findList(query,"");
+        List<Map<String, Object>> list = commonService.findList(query, "");
 
         Map<String, Object> obj = null;
 
@@ -264,11 +279,11 @@ public class TableController {
 
     @GetMapping("/initList")
     String initList(@RequestParam("id") String id, @RequestParam("tableName") String tableName, Model model
-            , @RequestParam("dbKey") String dbKey,HttpServletRequest request) {
-        Integer dataType = this.findDbType(dbKey,request);
+            , @RequestParam("dbKey") String dbKey, HttpServletRequest request) {
+        Integer dataType = this.findDbType(dbKey, request);
         List<TableInfo> list = new ArrayList<>();
         if (dataType == 1) {
-            list = mySqlService.findTableInfo(dbKey,tableName);
+            list = mySqlService.findTableInfo(dbKey, tableName);
         } else if (dataType == 2) {
             list = sqlServerService.findTableInfo(Long.valueOf(id), dbKey);
         }
@@ -284,35 +299,37 @@ public class TableController {
         System.out.println(array.toJSONString());
         model.addAttribute("cols", array.toJSONString());
         model.addAttribute("tableName", tableName);
-      /*  model.addAttribute("list", list);*/
+        /*  model.addAttribute("list", list);*/
         model.addAttribute("dbKey", dbKey);
         return "main/initList";
     }
 
     @ResponseBody
     @PostMapping("/queryAjaxList")
-    public Object applyAjaxList(QueryInfoDto query,HttpServletRequest request) {
+    public Object applyAjaxList(QueryInfoDto query, HttpServletRequest request) {
         String dbKey = request.getParameter("dbKey");
         try {
 //			List<Map<String,Object>>  list =commonService.findList(query);
-            ResultVO<Paging<Map<String, Object>>> result = commonService.queryAjaxList(query,dbKey);
+            ResultVO<Paging<Map<String, Object>>> result = commonService.queryAjaxList(query, dbKey);
             return setResponsePageVo(result);
         } catch (Exception e) {
             e.printStackTrace();
-           return null;
+            return null;
         }
 
     }
+
     public JSONObject setResponsePageVo(ResultVO<Paging<Map<String, Object>>> result) {
-        JSONObject json=new JSONObject();
+        JSONObject json = new JSONObject();
         json.put("code", 200);
         json.put("totals", result.getData().getTotalCount());
         json.put("list", result.getData().getItemList());
         return json;
     }
+
     @ResponseBody
     @PostMapping("/queryAjaxList2")
-    public JSONObject  applyAjaxList2(HttpServletRequest request) {
+    public JSONObject applyAjaxList2(HttpServletRequest request) {
         String currentPage = request.getParameter("pageno");
         //获取前台每页显示数据
         String pageSize = request.getParameter("pagesize");
@@ -325,7 +342,7 @@ public class TableController {
         JSONObject json = new JSONObject();
         try {
 //			List<Map<String,Object>>  list =commonService.findList(query);
-            PaginationSupport result = commonService.queryAjaxList2(query,dbKey);
+            PaginationSupport result = commonService.queryAjaxList2(query, dbKey);
             json.put("page", result);
             json.put("result", "0");
         } catch (Exception e) {
@@ -339,10 +356,17 @@ public class TableController {
     public void export(@PathVariable("id") String id,
                        @PathVariable("tablename") String tablename,
                        HttpServletResponse response,
-                       ModelMap modelMap, HttpServletRequest request,
-                       @PathVariable("dbkey") String dbkey) {
+                       ModelMap modelMap, HttpServletRequest request
+    ) {
         // 查询列表数据
-        List<TableInfo> list = sqlServerService.findTableInfo(Long.valueOf(id), dbkey);
+        String dbKey = request.getParameter("dbKey");
+        Integer dataType = this.findDbType(dbKey, request);
+        List<TableInfo> list = new ArrayList<>();
+        if (dataType == 1) {
+            list = mySqlService.findTableInfo(dbKey, tablename);
+        } else if (dataType == 2) {
+            list = sqlServerService.findTableInfo(Long.valueOf(id), dbKey);
+        }
         List<TableInfoExp> listExp = JSONArray.parseArray(JSONObject.toJSONString(list), TableInfoExp.class);
 
         for (TableInfoExp table : listExp) {
@@ -445,7 +469,7 @@ public class TableController {
         return filename;
     }
 
-    private Integer findDbType(String dbKey,HttpServletRequest request) {
+    private Integer findDbType(String dbKey, HttpServletRequest request) {
         //根据dbkey查询数据库类型
         Users users = (Users) request.getSession().getAttribute("user");
         DataSourceList dataSourceList = new DataSourceList();

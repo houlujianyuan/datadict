@@ -22,7 +22,7 @@
                 <span th:text="${explain}" ondblclick="editTable(this)"></span>
 
                 &nbsp;&nbsp;
-                <a th:href="@{'/api/export/'+${tablename}+'/'+${id} }" class="layui-btn layui-btn-xs" target="_blank">导出</a>&nbsp;&nbsp;
+                <a th:href="@{'/api/export/'+${tablename}+'/'+${id}+'?dbKey='+${dbKey}}" class="layui-btn layui-btn-xs" target="_blank">导出</a>&nbsp;&nbsp;
 
                 &nbsp;&nbsp;
                 <a th:href="@{'/api/generateEntityClasses/'+${id}+'/'+${tablename} }"class="layui-btn layui-btn-xs" target="_blank">生成实体类</a>
