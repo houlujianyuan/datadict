@@ -4,7 +4,9 @@ import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
+import com.qk365.datadict.common.JDBCUtlTool;
 import com.qk365.datadict.dao.DataSourceListMapper;
+import com.qk365.datadict.dto.ResultVO;
 import com.qk365.datadict.po.DataSourceList;
 import com.qk365.datadict.po.Users;
 import com.qk365.datadict.service.UserService;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -37,6 +40,27 @@ public class DataSourceListController {
 
         return "dataSourceList/addDataSource";
     }
+    @ResponseBody
+    @RequestMapping("/testDs")
+    public ResultVO testDs(Model model, DataSourceList dataSourceList,HttpServletRequest request) {
+        if (dataSourceList.getType() == 1){
+            dataSourceList.setDriverName("com.mysql.cj.jdbc.Driver");
+        }else if (dataSourceList.getType() == 2){
+            dataSourceList.setDriverName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        }else if (dataSourceList.getType() == 3){
+            dataSourceList.setDriverName("org.sqlite.JDBC");
+        }
+       boolean result = JDBCUtlTool.getConnection(dataSourceList.getDriverName(),dataSourceList.getUrl(),dataSourceList.getUsername(),dataSourceList.getPassword());
+        if (result){
+            ResultVO resultVo = new ResultVO(0, "成功", "");
+            return resultVo;
+        }else {
+            ResultVO resultVo = new ResultVO(1, "失败", "");
+            return resultVo;
+        }
+
+    }
+
 
     @RequestMapping("/addDs")
     public String addDs(Model model, DataSourceList dataSourceList,HttpServletRequest request) {
@@ -50,24 +74,31 @@ public class DataSourceListController {
             dataSourceList.setDriverName("org.sqlite.JDBC");
         }
         dataSourceList.setUserId(users.getId());
-        dataSourceListMapper.insertSelective(dataSourceList);
-        //将数据源添加至进程
-        DynamicRoutingDataSource dd = (DynamicRoutingDataSource) dataSource;
-        DataSourceProperty t = new DataSourceProperty();
-        t.setDriverClassName(dataSourceList.getDriverName());
-        t.setPollName(dataSourceList.getDatabaseName());
-        t.setUsername(dataSourceList.getUsername());
-        t.setPassword(dataSourceList.getPassword());
-        t.setUrl(dataSourceList.getUrl());
-        t.setDruid(new DruidConfig());
-        dd.addDataSource(dataSourceList.getDatabaseName(), dynamicDataSourceCreator.createDataSource(t));
+         boolean result =   JDBCUtlTool.getConnection(dataSourceList.getDriverName(),dataSourceList.getUrl(),dataSourceList.getUsername(),dataSourceList.getPassword());
+       if (result){
+           dataSourceListMapper.insertSelective(dataSourceList);
+           //将数据源添加至进程
+           DynamicRoutingDataSource dd = (DynamicRoutingDataSource) dataSource;
+           DataSourceProperty t = new DataSourceProperty();
+           t.setDriverClassName(dataSourceList.getDriverName());
+           t.setPollName(dataSourceList.getDatabaseName());
+           t.setUsername(dataSourceList.getUsername());
+           t.setPassword(dataSourceList.getPassword());
+           t.setUrl(dataSourceList.getUrl());
+           t.setDruid(new DruidConfig());
+           dd.addDataSource(dataSourceList.getDatabaseName(), dynamicDataSourceCreator.createDataSource(t));
 
-        //查询用户所有数据源
-        DataSourceList dataSourceList2= new DataSourceList();
-        dataSourceList2.setUserId(users.getId());
-        List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList2);
-        model.addAttribute("dataSourceLists", dataSourceLists);
-        return "dataSourceList/dataSourceList";
+           //查询用户所有数据源
+           DataSourceList dataSourceList2= new DataSourceList();
+           dataSourceList2.setUserId(users.getId());
+           List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList2);
+           model.addAttribute("dataSourceLists", dataSourceLists);
+           return "dataSourceList/dataSourceList";
+       }else {
+           model.addAttribute("msg",1);
+           return "dataSourceList/addDataSource";
+       }
+
     }
 
     @RequestMapping("/dataSourceList")

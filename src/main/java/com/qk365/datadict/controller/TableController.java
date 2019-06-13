@@ -222,8 +222,13 @@ public class TableController {
         if (dataType == 1) {
             mySqlService.editTableExplain(tableName, explain, dbKey);
         } else if (dataType == 2) {
-            sqlServerService.editTableExplain(tableName, explain, dbKey);
-            /*sqlServerService.insertEditTableInfo(tableName, oldVal, explain, "", "1", dbKey);*/
+
+            if (oldVal.equals("请输入表说明")){
+                sqlServerService.addTableExplain(tableName,explain,dbKey);
+            }else {
+                sqlServerService.editTableExplain(tableName, explain, dbKey);
+            }
+         /*   sqlServerService.insertEditTableInfo(tableName, oldVal, explain, "", "1", dbKey);*/
         }
 
         ResultVO resultVo = new ResultVO(0, "成功", "");

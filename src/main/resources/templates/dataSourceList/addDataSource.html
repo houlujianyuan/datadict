@@ -38,7 +38,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">数据库类型</label>
             <div class="layui-input-block">
-                <select name="type" lay-filter="">
+                <select name="type" id="type" lay-filter="">
                     <option value=""></option>
                     <option value="1">mysql</option>
                     <option value="2" >sqlServer</option>
@@ -49,13 +49,13 @@
         <div class="layui-form-item">
             <label class="layui-form-label">数据库名称</label>
             <div class="layui-input-block">
-                <input type="text" name="databaseName" lay-verify="databaseName" autocomplete="off" placeholder="请输入数据库名称;mysql库名称必须一致" class="layui-input">
+                <input type="text" name="databaseName" id="databaseName" lay-verify="databaseName" autocomplete="off" placeholder="请输入数据库名称;mysql库名称必须一致" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">数据库URL</label>
             <div class="layui-input-block">
-                <input type="text" name="url" lay-verify="required"
+                <input type="text" name="url" id="url" lay-verify="required"
                        lay-reqtext="数据库URL是必填项，岂能为空？" placeholder="格式：jdbc:mysql://192.168.1.213:3306/qkapartment?useUnicode=true&characterEncoding=utf8&useSSL=false" autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -66,20 +66,21 @@
         <div class="layui-form-item">
             <label class="layui-form-label">用户名</label>
             <div class="layui-input-block">
-                <input type="text" name="username" lay-verify="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                <input type="text" name="username" id="username" lay-verify="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">密码</label>
             <div class="layui-input-block">
-                <input type="text" name="password" lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                <input type="text" name="password" id="password" lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
             </div>
         </div>
 
 
         <div class="layui-form-item">
             <div class="layui-input-block">
+                <button class="layui-btn"  type="button" onclick="testDs()" lay-filter="demo1">测试连接</button>
                 <button class="layui-btn"  type="submit" lay-filter="demo1">提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
@@ -89,11 +90,36 @@
 
 </body>
 <script src="/js/layui.js"></script>
+<script src="/js/jquery-2.0.3.min.js"></script>
 <script>
     layui.use('form', function(){
         var form = layui.form;
 
         //各种基于事件的操作，下面会有进一步介绍
     });
+    function testDs() {
+        var type = $("#type").val()
+        var databaseName = $("#databaseName").val()
+        var url = $("#url").val()
+        var username = $("#username").val()
+        var password = $("#password").val()
+        $.ajax({
+            type: 'post',
+            url: "/api/testDs",
+            data: {"type":type,"databaseName":databaseName,"url":url,"username":username,"password":password},
+            dataType: "json",
+            success: function(msg) {
+                debugger
+                if(msg.result == 0){
+                   alert("成功")
+                }else {
+                  alert("失败，请检查连接！")
+                }
+            },error: function(request) {
+                alert("系统异常，联系管理员!")
+            }
+        });
+        
+    }
 </script>
 </html>
