@@ -12,7 +12,7 @@
     <artifactId>datadict</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>datadict</name>
-    <description>Demo project for Spring Boot</description>
+    <description>datadict project for Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>

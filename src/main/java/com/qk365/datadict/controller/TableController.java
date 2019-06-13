@@ -35,6 +35,7 @@ import java.util.Map;
  * @author 6154876
  */
 @Controller
+@RequestMapping("/api")
 public class TableController {
 
 

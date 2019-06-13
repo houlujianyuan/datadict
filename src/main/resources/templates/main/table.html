@@ -17,15 +17,15 @@
                 <!--
                 <a th:href="@{'/list/'+${tablename}}" target="_blank"><span th:text="${tablename}"></span></a>&nbsp;&nbsp;
                 -->
-                <a th:href="@{'/initList?id='+${id}+'&tableName='+${tablename} +'&dbKey='+${dbKey}}" target="_blank"><span th:text="${tablename}"></span></a>&nbsp;&nbsp;
+                <a th:href="@{'/api/initList?id='+${id}+'&tableName='+${tablename} +'&dbKey='+${dbKey}}" target="_blank"><span th:text="${tablename}"></span></a>&nbsp;&nbsp;
 
                 <span th:text="${explain}" ondblclick="editTable(this)"></span>
 
                 &nbsp;&nbsp;
-                <a th:href="@{'/export/'+${tablename}+'/'+${id} }" class="layui-btn layui-btn-xs" target="_blank">导出</a>&nbsp;&nbsp;
+                <a th:href="@{'/api/export/'+${tablename}+'/'+${id} }" class="layui-btn layui-btn-xs" target="_blank">导出</a>&nbsp;&nbsp;
 
                 &nbsp;&nbsp;
-                <a th:href="@{'/generateEntityClasses/'+${id}+'/'+${tablename} }"class="layui-btn layui-btn-xs" target="_blank">生成实体类</a>
+                <a th:href="@{'/api/generateEntityClasses/'+${id}+'/'+${tablename} }"class="layui-btn layui-btn-xs" target="_blank">生成实体类</a>
             </div></legend>
     <div>
 

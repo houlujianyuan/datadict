@@ -37,9 +37,15 @@ public class MainController {
     public String index() {
         return "index";
     }
-
+    @RequestMapping("/login")
+    public String login() {
+        return "index";
+    }
     @RequestMapping("/main")
     public String login(Model model, Users users, HttpServletRequest request) {
+        if (null == users.getUsername()){
+            return "index";
+        }
         List<Users> list = userService.selectList(users, "");
         if (list != null && list.size() > 0) {
             HttpSession session = request.getSession();
@@ -76,7 +82,7 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping("/dataIndex")
+    @RequestMapping("/api/dataIndex")
     public String login(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
         Users users = (Users) session.getAttribute("user");

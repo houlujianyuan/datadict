@@ -22,6 +22,7 @@ import java.util.List;
  * @author zhaoge
  */
 @Controller
+@RequestMapping("/api")
 public class DataSourceListController {
 
     @Autowired
@@ -94,5 +95,16 @@ public class DataSourceListController {
         model.addAttribute("dbKey", dbKey);
         return "main/main";
     }
-
+    @RequestMapping("/delDs")
+    public String delDs(Model model, HttpServletRequest request) {
+        String id = request.getParameter("id");
+      dataSourceListMapper.deleteByPrimaryKey(Integer.parseInt(id));
+        HttpSession session = request.getSession();
+        Users users = (Users) session.getAttribute("user");
+        DataSourceList dataSourceList = new DataSourceList();
+        dataSourceList.setUserId(users.getId());
+        List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList);
+        model.addAttribute("dataSourceLists", dataSourceLists);
+        return "dataSourceList/dataSourceList";
+    }
 }

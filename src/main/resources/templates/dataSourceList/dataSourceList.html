@@ -11,10 +11,10 @@
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo"><a href="/dataIndex" style="color: #009688">数据库字典</a></div>
+        <div class="layui-logo"><a href="/api/dataIndex" style="color: #009688">数据库字典</a></div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="/dataSourceList">数据源管理</a></li>
+            <li class="layui-nav-item"><a href="/api/dataSourceList">数据源管理</a></li>
             <!--<li class="layui-nav-item">
                 <a href="javascript:;">数据源</a>
                 <dl class="layui-nav-child">
@@ -34,7 +34,7 @@
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
         <legend>数据源列表</legend>
     </fieldset>
-        <a type="button" class="layui-btn" style="margin-left: 90%" href="/toAddDs">新增</a>
+        <a type="button" class="layui-btn" style="margin-left: 90%" href="/api/toAddDs">新增</a>
     <div class="layui-form">
         <table class="layui-table">
             <colgroup>
@@ -51,6 +51,7 @@
                 <th style="width: 8%">用户名称</th>
                 <th style="width: 6%">密码</th>
                 <th style="width: 6%">数据库类型</th>
+                <th style="width: 6%">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -61,8 +62,9 @@
                 <td th:text="${data.url}" ></td>
                 <td th:text="${data.username}"></td>
                 <td th:text="${data.password}"></td>
-                <td th:text="${data.type}">
-                </td>
+                <td th:if="${data.type == 1}">mysql</td>
+                <td th:if="${data.type == 2}">sqlServer</td>
+                <td>  <a type="button" class="layui-btn layui-btn-xs" th:href="@{'/api/delDs?id='+${data.id}}" >删除</a></td>
             </tr>
             </tbody>
         </table>

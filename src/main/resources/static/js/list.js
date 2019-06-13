@@ -10,7 +10,7 @@ layui.use(['layer','table'], function(){
     var screen = $("#screen").val()
     tableIns=table.render({
         elem: '#tableList',
-        url:'/queryAjaxList',
+        url:'/api/queryAjaxList',
         curr: pageCurr,
         method:'POST',
         page: true,
@@ -43,7 +43,7 @@ $('#screen').on('keydown', function (event) {
         var screen = $("#screen").val()
         tableIns=table.render({
             elem: '#tableList',
-            url:'/queryAjaxList',
+            url:'/api/queryAjaxList',
             curr: pageCurr,
             method:'POST',
             page: true,

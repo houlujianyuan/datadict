@@ -11,16 +11,16 @@
 <input type="hidden" id="dbKey" name="dbKey" th:value="${dbKey}" >
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo"><a href="/dataIndex" style="color: #009688">数据库字典</a></div>
+        <div class="layui-logo"><a href="/api/dataIndex" style="color: #009688">数据库字典</a></div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="/dataSourceList">数据源管理</a></li>
+            <li class="layui-nav-item"><a href="/api/dataSourceList">数据源管理</a></li>
 
            <li class="layui-nav-item">
                 <a href="javascript:;">数据源</a>
                 <dl class="layui-nav-child">
                     <tr th:each="table,tableStat: ${dataSourceLists}">
-                        <dd><a th:href="@{'/changeDbKey?dbKey='+${table.databaseName}}" th:text="${table.databaseName}"></a></dd>
+                        <dd><a th:href="@{'/api/changeDbKey?dbKey='+${table.databaseName}}" th:text="${table.databaseName}"></a></dd>
                     </tr>
                 </dl>
             </li>
@@ -34,10 +34,10 @@
     <table border="0" cellspacing="0" cellpadding="0" width="100%" height="650px">
         <tr>
             <td id="frmTitle" align="center" width="198" style="border-right: 1px solid #000000">
-                <Iframe  name="BoardTitle" 	style="HEIGHT: 100%; VISIBILITY: inherit; WIDTH: 198; Z-INDEX: 2" 	scrolling="auto" frameborder="0" th:src="@{'/left?dbKey='+${dbKey}}"  ></Iframe>
+                <Iframe  name="BoardTitle" 	style="HEIGHT: 100%; VISIBILITY: inherit; WIDTH: 198; Z-INDEX: 2" 	scrolling="auto" frameborder="0" th:src="@{'/api/left?dbKey='+${dbKey}}"  ></Iframe>
             </td>
             <td style="width:100%">
-                <Iframe id="mainFrame" name="mainFrame" style="HEIGHT: 100%; VISIBILITY: inherit; WIDTH: 100%; Z-INDEX: 1" scrolling="auto" frameborder="0"  th:src="@{'/table/1/1?dbKey='+${dbKey}}" ></Iframe>
+                <Iframe id="mainFrame" name="mainFrame" style="HEIGHT: 100%; VISIBILITY: inherit; WIDTH: 100%; Z-INDEX: 1" scrolling="auto" frameborder="0"  th:src="@{'/api/table/1/1?dbKey='+${dbKey}}" ></Iframe>
             </td>
         </tr>
 

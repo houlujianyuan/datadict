@@ -13,7 +13,7 @@
 		</div>
 		<div class="tab" style="padding-top: 3px; padding-bottom: 3px;padding-left: 10px" th:each="table,tableStat: ${list}" th:id="'info'+${tableStat.index}">
 				<img src="/img/topItem_col.gif">&nbsp;
-				<a class="a"  th:href="@{'/table/'+${table.name}+'/'+${table.id}+'?dbKey='+${dbKey}}" target="mainFrame"  th:id="'tablename'+${tableStat.index}" th:text="${table.name}+' '+${table.explain}"></a>
+				<a class="a"  th:href="@{'/api/table/'+${table.name}+'/'+${table.id}+'?dbKey='+${dbKey}}" target="mainFrame"  th:id="'tablename'+${tableStat.index}" th:text="${table.name}+' '+${table.explain}"></a>
 		</div>
     </div>
     <script src="/js/jquery-2.0.3.min.js" th:src="@{/js/jquery-2.0.3.min.js}"></script>
