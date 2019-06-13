@@ -20,21 +20,21 @@ function edit(e,columnName){
 
 function editTable(e){
 	var oldVal=$(e).html();
-	var html =" <input type=\"text\" style=\"width:200px\" class=\"editExplain\" value=\""+oldVal+"\">";
+	var html =" <input type=\"text\" style=\"width:200px\" id=\"editExplain\" class=\"editExplain\" value=\""+oldVal+"\">";
 	$(e).html(html);
 	
 	$(".editExplain").val("").focus().val(oldVal);
 	
 	$(".editExplain").blur(function(){
 		$(e).html($(this).val());
-		
+		debugger
 		//当值改变是触发保存
 		if(oldVal!=$(this).val()){
+
 			postEditTable($(this).val(),oldVal);
 		}
 	});
 }
-
 //提交后端
 function postEdit(val,columnName,oldVal){ 
 	var tableName=$("#tableName").val();
@@ -46,7 +46,7 @@ function postEdit(val,columnName,oldVal){
 		  //保存 
 		  $.ajax({
 	            type: 'post',
-	            url: "/editColumnExplain",
+	            url: "/api/editColumnExplain",
 	            data: {"tableName":tableName,"columnName":columnName,"explain":val,"oldVal":oldVal},
 	            dataType: "json",
 	            success: function(msg) {
@@ -67,8 +67,10 @@ function postEdit(val,columnName,oldVal){
 
 
 //提交后端
-function postEditTable(val,oldVal){ 
+function postEditTable(val,oldVal){
+	debugger
 	var tableName=$("#tableName").val();
+	var dbKey = $("#dbKey").val()
 	layer.confirm('确认修改？', {
 		  offset: 't',
 		  anim: 6,
@@ -77,8 +79,8 @@ function postEditTable(val,oldVal){
 		  //保存 
 		  $.ajax({
 	            type: 'post',
-	            url: "/editTableExplain",
-	            data: {"tableName":tableName,"explain":val,"oldVal":oldVal},
+	            url: "/api/editTableExplain",
+	            data: {"tableName":tableName,"explain":val,"oldVal":oldVal,"dbKey":dbKey},
 	            dataType: "json",
 	            success: function(msg) {
 	                if(msg.result==0){

@@ -53,18 +53,16 @@
 	</select>
 	 
 	 <select id="addTableExplain"  statementType="CALLABLE">
-        EXECUTE sp_addextendedproperty   N'MS_Description', '${explain}', N'user', N'dbo', N'table', N'${tableName}', NULL, NULL   
+      alter table ${tableName} comment #{explain};
      </select>
      
 	 <select id="editTableExplain"  statementType="CALLABLE">
-        EXECUTE sp_updateextendedproperty   N'MS_Description', '${explain}', N'user', N'dbo', N'table', N'${tableName}', NULL, NULL   
+       alter table ${tableName} comment #{explain};
      </select>
     
      <select id="addColumnExplain"  statementType="CALLABLE">
-         EXEC sp_addextendedproperty 'MS_Description',#{explain},'user',dbo,'table',#{tableName},'column',${columnName}
-     </select>
+    alter table ${tableName} modify column ${columnName} int comment #{explain};     </select>
      
      <select id="editColumnExplain"  statementType="CALLABLE">
-         EXEC sp_updateextendedproperty 'MS_Description',#{explain},'user',dbo,'table',#{tableName},'column',${columnName}
-     </select>
+    alter table ${tableName} modify column ${columnName} int comment  #{explain};     </select>
 </mapper>

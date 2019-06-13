@@ -142,7 +142,9 @@ public class TableController {
             } else {
                 for (Map<String, Object> map : tableList) {
                     if (map.get("name").equals(tablename)) {
-                        explain = map.get("comment") + "";
+                        if (map.get("comment") != null && !map.get("comment").equals("")) {
+                            explain = map.get("comment") + "";
+                        }
                     }
                 }
             }
@@ -157,7 +159,9 @@ public class TableController {
             } else {
                 for (Map<String, Object> map : tableList) {
                     if (map.get("name").equals(tablename)) {
-                        explain = map.get("explain") + "";
+                        if (map.get("explain") != null && !map.get("explain").equals("")) {
+                            explain = map.get("explain") + "";
+                        }
                     }
                 }
             }
@@ -210,10 +214,18 @@ public class TableController {
     @RequestMapping(value = "/editTableExplain")
     public ResultVO editTableExplain(@RequestParam("tableName") String tableName,
                                      @RequestParam("explain") String explain,
-                                     @RequestParam("oldVal") String oldVal, @RequestParam("dbKey") String dbKey
+                                     @RequestParam("oldVal") String oldVal, HttpServletRequest request
     ) {
-        sqlServerService.editTableExplain(tableName, explain, dbKey);
-        sqlServerService.insertEditTableInfo(tableName, oldVal, explain, "", "1", dbKey);
+
+        String dbKey = request.getParameter("dbKey");
+        Integer dataType = this.findDbType(dbKey, request);
+        if (dataType == 1) {
+            mySqlService.editTableExplain(tableName, explain, dbKey);
+        } else if (dataType == 2) {
+            sqlServerService.editTableExplain(tableName, explain, dbKey);
+            /*sqlServerService.insertEditTableInfo(tableName, oldVal, explain, "", "1", dbKey);*/
+        }
+
         ResultVO resultVo = new ResultVO(0, "成功", "");
         return resultVo;
     }
@@ -410,10 +422,16 @@ public class TableController {
     public void generateEntityClasses(@PathVariable("tableName") String tableName,
                                       @PathVariable("tableId") String tableId,
                                       HttpServletResponse response,
-                                      ModelMap modelMap, HttpServletRequest request,
-                                      @PathVariable("dbKey") String dbKey) {
-        List<TableInfo> list = sqlServerService.findTableInfo(Long.valueOf(tableId), dbKey);
-
+                                      ModelMap modelMap, HttpServletRequest request
+    ) {
+        String dbKey = request.getParameter("dbKey");
+        List<TableInfo> list = new ArrayList<>();
+        Integer dataType = this.findDbType(dbKey, request);
+        if (dataType == 1) {
+            list = mySqlService.findTableInfo(dbKey, tableName);
+        } else if (dataType == 2) {
+            list = sqlServerService.findTableInfo(Long.valueOf(tableId), dbKey);
+        }
         String result = sqlServerService.generateEntityClasses(list, tableName, dbKey);
 
         String fileName = getClassNameByTableName(tableName) + ".java";
