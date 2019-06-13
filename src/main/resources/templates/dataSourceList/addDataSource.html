@@ -34,11 +34,12 @@
         <legend>添加数据源</legend>
     </fieldset>
 
-    <form class="layui-form" action="/api/addDs">
+    <form class="layui-form" id="from" action="/api/addDs">
+        <input type="hidden" name="result" id="result">
         <div class="layui-form-item">
             <label class="layui-form-label">数据库类型</label>
             <div class="layui-input-block">
-                <select name="type" id="type" lay-filter="">
+                <select name="type" id="type" lay-filter="" required>
                     <option value=""></option>
                     <option value="1">mysql</option>
                     <option value="2" >sqlServer</option>
@@ -49,14 +50,14 @@
         <div class="layui-form-item">
             <label class="layui-form-label">数据库名称</label>
             <div class="layui-input-block">
-                <input type="text" name="databaseName" id="databaseName" lay-verify="databaseName" autocomplete="off" placeholder="请输入数据库名称;mysql库名称必须一致" class="layui-input">
+                <input type="text" name="databaseName"  required id="databaseName" lay-verify="databaseName" autocomplete="off" placeholder="请输入数据库名称;mysql库名称必须一致" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">数据库URL</label>
             <div class="layui-input-block">
                 <input type="text" name="url" id="url" lay-verify="required"
-                       lay-reqtext="数据库URL是必填项，岂能为空？" placeholder="格式：jdbc:mysql://192.168.1.213:3306/qkapartment?useUnicode=true&characterEncoding=utf8&useSSL=false" autocomplete="off" class="layui-input">
+                       lay-reqtext="数据库URL是必填项，岂能为空？" required placeholder="格式：jdbc:mysql://192.168.1.213:3306/qkapartment?useUnicode=true&characterEncoding=utf8&useSSL=false" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -66,14 +67,14 @@
         <div class="layui-form-item">
             <label class="layui-form-label">用户名</label>
             <div class="layui-input-block">
-                <input type="text" name="username" id="username" lay-verify="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                <input type="text" name="username" id="username" lay-verify="username" required placeholder="请输入用户名" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">密码</label>
             <div class="layui-input-block">
-                <input type="text" name="password" id="password" lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                <input type="text" name="password" id="password" required lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -112,14 +113,27 @@
                 debugger
                 if(msg.result == 0){
                    alert("成功")
+                    $("#result").val(1);
                 }else {
                   alert("失败，请检查连接！")
+                    $("#result").val(2);
                 }
             },error: function(request) {
                 alert("系统异常，联系管理员!")
+                $("#result").val(2);
             }
         });
         
+    }
+    function tijiao() {
+        var result = $("#result").val();
+        if (result == 1) {
+            var layer = layui.layer,
+                form = layer.form;
+                form.submit
+        }else {
+            alert("请先测试通过！")
+        }
     }
 </script>
 </html>
