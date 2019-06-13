@@ -133,8 +133,9 @@ public class MainController {
             return "register";
         }
         userService.insertUser(users, "");
+        List<Users> list2 = userService.selectList(users, "");
         HttpSession session = request.getSession();
-        session.setAttribute("user", users);
+        session.setAttribute("user", list2.get(0));
         return "dataSourceList/addDataSource";
     }
     @RequestMapping("/exit")
