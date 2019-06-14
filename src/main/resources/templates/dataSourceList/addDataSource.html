@@ -99,11 +99,16 @@
         //各种基于事件的操作，下面会有进一步介绍
     });
     function testDs() {
+        debugger
         var type = $("#type").val()
         var databaseName = $("#databaseName").val()
         var url = $("#url").val()
         var username = $("#username").val()
         var password = $("#password").val()
+        if (type == '' || databaseName == '' || url == '' || username == '' || password == ''){
+            alert("参数不能为空")
+            return;
+        }
         $.ajax({
             type: 'post',
             url: "/api/testDs",
