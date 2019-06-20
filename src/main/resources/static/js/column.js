@@ -1,5 +1,6 @@
  
 function edit(e,columnName){
+	debugger
 	var oldVal=$(e).html();
 	var html =" <textarea style=\"width:100%;height:100%\" class=\"editTextarea\">"+oldVal+"</textarea>";
 	$(e).html(html);
@@ -38,6 +39,7 @@ function editTable(e){
 //提交后端
 function postEdit(val,columnName,oldVal){ 
 	var tableName=$("#tableName").val();
+    var dbKey = $("#dbKey").val()
 	layer.confirm('确认修改？', {
 		  offset: 't',
 		  anim: 6,
@@ -47,7 +49,7 @@ function postEdit(val,columnName,oldVal){
 		  $.ajax({
 	            type: 'post',
 	            url: "/api/editColumnExplain",
-	            data: {"tableName":tableName,"columnName":columnName,"explain":val,"oldVal":oldVal},
+	            data: {"tableName":tableName,"columnName":columnName,"explain":val,"oldVal":oldVal,"dbKey":dbKey},
 	            dataType: "json",
 	            success: function(msg) {
 	                if(msg.result==0){

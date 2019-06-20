@@ -249,9 +249,23 @@ public class TableController {
                                       @RequestParam("explain") String explain,
                                       @RequestParam("columnName") String columnName,
                                       @RequestParam("oldVal") String oldVal,
-                                      @RequestParam("dbKey") String dbKey) {
-        sqlServerService.editColumnExplain(tableName, explain, columnName, dbKey);
-        sqlServerService.insertEditTableInfo(tableName, oldVal, explain, columnName, "2", dbKey);
+                                      @RequestParam("dbKey") String dbKey, HttpServletRequest request) {
+
+
+
+        Integer dataType = this.findDbType(dbKey, request);
+        if (dataType == 1) {
+            mySqlService.editColumnExplain(tableName, explain,columnName,dbKey);
+        } else if (dataType == 2) {
+
+            if (oldVal.equals("")){
+                sqlServerService.addColumnExplain(tableName, explain, columnName, dbKey);
+
+            }else {
+                sqlServerService.editColumnExplain(tableName, explain, columnName, dbKey);
+            }
+        }
+
         ResultVO resultVo = new ResultVO(0, "成功", "");
         return resultVo;
     }
