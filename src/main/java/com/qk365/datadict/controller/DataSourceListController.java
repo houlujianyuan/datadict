@@ -90,7 +90,7 @@ public class DataSourceListController {
 
            //查询用户所有数据源
            DataSourceList dataSourceList2= new DataSourceList();
-           dataSourceList2.setUserId(users.getId());
+           /*dataSourceList2.setUserId(users.getId());*/
            List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList2);
            model.addAttribute("dataSourceLists", dataSourceLists);
            return "dataSourceList/dataSourceList";
@@ -104,10 +104,10 @@ public class DataSourceListController {
     @RequestMapping("/dataSourceList")
     public String dataSourceList(Model model,HttpServletRequest request) {
         //查询用户所有数据源
-        HttpSession session = request.getSession();
-        Users users = (Users) session.getAttribute("user");
+      /*  HttpSession session = request.getSession();
+        Users users = (Users) session.getAttribute("user");*/
         DataSourceList dataSourceList = new DataSourceList();
-        dataSourceList.setUserId(users.getId());
+       /* dataSourceList.setUserId(users.getId());*/
         List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList);
         model.addAttribute("dataSourceLists", dataSourceLists);
         return "dataSourceList/dataSourceList";
@@ -116,10 +116,10 @@ public class DataSourceListController {
     @RequestMapping("/changeDbKey")
     public String changeDbKey(Model model, HttpServletRequest request) {
         //查询用户所有数据源
-        HttpSession session = request.getSession();
-        Users users = (Users) session.getAttribute("user");
+      /*  HttpSession session = request.getSession();
+        Users users = (Users) session.getAttribute("user");*/
         DataSourceList dataSourceList2= new DataSourceList();
-        dataSourceList2.setUserId(users.getId());
+       /* dataSourceList2.setUserId(users.getId());*/
         List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList2);
         model.addAttribute("dataSourceLists", dataSourceLists);
         String dbKey = request.getParameter("dbKey");
@@ -130,10 +130,10 @@ public class DataSourceListController {
     public String delDs(Model model, HttpServletRequest request) {
         String id = request.getParameter("id");
       dataSourceListMapper.deleteByPrimaryKey(Integer.parseInt(id));
-        HttpSession session = request.getSession();
-        Users users = (Users) session.getAttribute("user");
+        /*HttpSession session = request.getSession();
+        Users users = (Users) session.getAttribute("user");*/
         DataSourceList dataSourceList = new DataSourceList();
-        dataSourceList.setUserId(users.getId());
+       /* dataSourceList.setUserId(users.getId());*/
         List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList);
         model.addAttribute("dataSourceLists", dataSourceLists);
         return "dataSourceList/dataSourceList";

@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfigurer implements WebMvcConfigurer {
-        @Override
+      /*  @Override
         public void addInterceptors(InterceptorRegistry registry) {
             registry.addInterceptor(new Interceptor()).addPathPatterns("/api/**")
                     .excludePathPatterns("/main")
@@ -14,5 +14,5 @@ public class WebConfigurer implements WebMvcConfigurer {
                     .excludePathPatterns("/login")
                     .excludePathPatterns("/templates/**").excludePathPatterns("/static/**");
         }
-
+*/
 }

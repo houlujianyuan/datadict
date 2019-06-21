@@ -33,7 +33,7 @@ public class MainController {
     @Autowired
     private DynamicDataSourceCreator dynamicDataSourceCreator;
 
-    @RequestMapping("/")
+    @RequestMapping("/main")
     public String index() {
         return "index";
     }
@@ -41,18 +41,18 @@ public class MainController {
     public String login() {
         return "index";
     }
-    @RequestMapping("/main")
+    @RequestMapping("/")
     public String login(Model model, Users users, HttpServletRequest request) {
-        if (null == users.getUsername()){
+      /*  if (null == users.getUsername()){
             return "index";
         }
         List<Users> list = userService.selectList(users, "");
         if (list != null && list.size() > 0) {
             HttpSession session = request.getSession();
-            session.setAttribute("user", list.get(0));
+            session.setAttribute("user", list.get(0));*/
             //查询datasource
             DataSourceList dataSourceList1 = new DataSourceList();
-            dataSourceList1.setUserId(list.get(0).getId());
+         /*   dataSourceList1.setUserId(list.get(0).getId());*/
             List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList1);
             if (dataSourceLists != null && dataSourceLists.size() > 0) {
                 //将所有数据源添加至进程
@@ -77,18 +77,16 @@ public class MainController {
                 //跳转添加数据源页面
                 return "dataSourceList/addDataSource";
             }
-        }
-        model.addAttribute("msg", 1);
-        return "index";
+       /* }*/
     }
 
     @RequestMapping("/api/dataIndex")
     public String login(Model model, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Users users = (Users) session.getAttribute("user");
+      /*  HttpSession session = request.getSession();
+        Users users = (Users) session.getAttribute("user");*/
         //查询datasource
         DataSourceList dataSourceList1 = new DataSourceList();
-        dataSourceList1.setUserId(users.getId());
+      /*  dataSourceList1.setUserId(users.getId());*/
         List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList1);
         if (dataSourceLists != null && dataSourceLists.size() > 0) {
             //将所有数据源添加至进程

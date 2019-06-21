@@ -32,7 +32,7 @@ public class TableInfo {
      * 长度
      */
     @Excel(name = "长度")
-    private Integer length;
+    private String length;
 
     /**
      * 小数位数
@@ -105,11 +105,11 @@ public class TableInfo {
         this.dataType = dataType;
     }
 
-    public Integer getLength() {
+    public String getLength() {
         return length;
     }
 
-    public void setLength(Integer length) {
+    public void setLength(String length) {
         this.length = length;
     }
 

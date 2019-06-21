@@ -41,7 +41,7 @@
         column_name as columnName,
         column_comment as comment,
         data_type as dataType,
-        0 as length,
+        column_type as length,
         is_nullable as empty,
         column_default as defaultValue,
         column_key as pk,

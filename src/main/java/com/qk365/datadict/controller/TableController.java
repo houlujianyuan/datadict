@@ -62,7 +62,7 @@ public class TableController {
         //根据dbkey查询数据库类型
         DataSourceList dataSourceList = new DataSourceList();
         dataSourceList.setDatabaseName(dbKey);
-        dataSourceList.setUserId(users.getId());
+      /*  dataSourceList.setUserId(users.getId());*/
         DataSourceList dataSourceList1 = dataSourceListMapper.selectOne(dataSourceList);
         //mysql
         if (dataSourceList1.getType() == 1) {
@@ -508,10 +508,10 @@ public class TableController {
 
     private Integer findDbType(String dbKey, HttpServletRequest request) {
         //根据dbkey查询数据库类型
-        Users users = (Users) request.getSession().getAttribute("user");
+       /* Users users = (Users) request.getSession().getAttribute("user");*/
         DataSourceList dataSourceList = new DataSourceList();
         dataSourceList.setDatabaseName(dbKey);
-        dataSourceList.setUserId(users.getId());
+     /*   dataSourceList.setUserId(users.getId());*/
         DataSourceList dataSourceList1 = dataSourceListMapper.selectOne(dataSourceList);
         return dataSourceList1.getType();
     }
