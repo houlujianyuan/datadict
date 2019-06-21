@@ -55,7 +55,7 @@ public class MainController {
          /*   dataSourceList1.setUserId(list.get(0).getId());*/
             List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList1);
             if (dataSourceLists != null && dataSourceLists.size() > 0) {
-                //将所有数据源添加至进程
+            /*    //将所有数据源添加至进程
                 dataSourceLists.stream().forEach(dataSourceList -> {
                             DynamicRoutingDataSource dd = (DynamicRoutingDataSource) dataSource;
                             DataSourceProperty t = new DataSourceProperty();
@@ -67,7 +67,7 @@ public class MainController {
                             t.setDruid(new DruidConfig());
                             dd.addDataSource(dataSourceList.getDatabaseName(), dynamicDataSourceCreator.createDataSource(t));
                         }
-                );
+                );*/
                 //跳转默认第一个数据源
                 model.addAttribute("dbKey", dataSourceLists.get(0).getDatabaseName());
                 model.addAttribute("dataSourceLists", dataSourceLists);
