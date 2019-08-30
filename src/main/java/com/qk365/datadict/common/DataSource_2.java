@@ -1,40 +1,49 @@
-package com.qk365.datadict.service.impl;
+package com.qk365.datadict.common;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.qk365.datadict.dao.EditTableInfoMapper;
 import com.qk365.datadict.dao.SqlServerMapper;
 import com.qk365.datadict.po.EditTableInfo;
 import com.qk365.datadict.po.TableInfo;
-import com.qk365.datadict.service.SqlServerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-@Service
-public class SqlServerServiceImpl implements SqlServerService {
+/**
+ * @author zhaoge sqlserver
+ */
+@Component("datasource_2")
+public class DataSource_2 implements DataSourceItem {
     @Autowired
     private SqlServerMapper sqlServerMapper;
     @Autowired
     private EditTableInfoMapper editTableInfoMapper;
 
 
+
     @Override
     @DS("#dbKey")
-    public List<Map<String, Object>> findTableName(String dbKey) {
+    public List<Map<String, Object>> findTableName(String dbKey, String dbName) {
         return sqlServerMapper.findTableName();
     }
 
     @Override
     @DS("#dbKey")
-    public List<TableInfo> findTableInfo(Long id,String dbKey) {
-        return sqlServerMapper.findTableInfo(id);
+    public List<TableInfo> findTableInfo(String tableName,String dbKey) {
+        return sqlServerMapper.findTableInfo(tableName);
     }
+
 
     @Override
     @DS("#dbKey")
-    public void editTableExplain(String tableName, String explain,String dbKey) {
-        sqlServerMapper.editTableExplain(tableName,explain);
+    public void editTableExplain(String tableName, String explain,String dbKey,String oldValue) {
+        if (oldValue.equals("请输入表说明")){
+            sqlServerMapper.addTableExplain(tableName,explain);
+        }else {
+            sqlServerMapper.editTableExplain(tableName, explain);
+        }
+
     }
 
     @Override
@@ -45,8 +54,13 @@ public class SqlServerServiceImpl implements SqlServerService {
 
     @Override
     @DS("#dbKey")
-    public void editColumnExplain(String tableName, String explain, String columnName,String dbKey) {
-        sqlServerMapper.editColumnExplain(tableName,explain,columnName);
+    public void editColumnExplain(String tableName, String explain, String columnName,String dbKey,String oldVal) {
+        if (oldVal.equals("")){
+            sqlServerMapper.addColumnExplain(tableName,explain,columnName);
+        }else {
+            sqlServerMapper.editColumnExplain(tableName,explain,columnName);
+        }
+
     }
 
     @Override
@@ -186,4 +200,5 @@ public class SqlServerServiceImpl implements SqlServerService {
             return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
         }
     }
+
 }

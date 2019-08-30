@@ -4,12 +4,12 @@ import com.baomidou.dynamic.datasource.DynamicDataSourceCreator;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.druid.DruidConfig;
+import com.qk365.datadict.common.DataSourceEnum;
 import com.qk365.datadict.common.JDBCUtlTool;
 import com.qk365.datadict.dao.DataSourceListMapper;
 import com.qk365.datadict.dto.ResultVO;
 import com.qk365.datadict.po.DataSourceList;
 import com.qk365.datadict.po.Users;
-import com.qk365.datadict.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,13 +43,9 @@ public class DataSourceListController {
     @ResponseBody
     @RequestMapping("/testDs")
     public ResultVO testDs(Model model, DataSourceList dataSourceList,HttpServletRequest request) {
-        if (dataSourceList.getType() == 1){
-            dataSourceList.setDriverName("com.mysql.cj.jdbc.Driver");
-        }else if (dataSourceList.getType() == 2){
-            dataSourceList.setDriverName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        }else if (dataSourceList.getType() == 3){
-            dataSourceList.setDriverName("org.sqlite.JDBC");
-        }
+
+         dataSourceList.setDriverName(DataSourceEnum.getDriverNameById(dataSourceList.getType()));
+
        boolean result = JDBCUtlTool.getConnection(dataSourceList.getDriverName(),dataSourceList.getUrl(),dataSourceList.getUsername(),dataSourceList.getPassword());
         if (result){
             ResultVO resultVo = new ResultVO(0, "成功", "");
@@ -65,15 +61,7 @@ public class DataSourceListController {
     @RequestMapping("/addDs")
     public String addDs(Model model, DataSourceList dataSourceList,HttpServletRequest request) {
         HttpSession session = request.getSession();
-        Users users = (Users) session.getAttribute("user");
-        if (dataSourceList.getType() == 1){
-            dataSourceList.setDriverName("com.mysql.cj.jdbc.Driver");
-        }else if (dataSourceList.getType() == 2){
-            dataSourceList.setDriverName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        }else if (dataSourceList.getType() == 3){
-            dataSourceList.setDriverName("org.sqlite.JDBC");
-        }
-        dataSourceList.setUserId(users.getId());
+        dataSourceList.setDriverName(DataSourceEnum.getDriverNameById(dataSourceList.getType()));
          boolean result =   JDBCUtlTool.getConnection(dataSourceList.getDriverName(),dataSourceList.getUrl(),dataSourceList.getUsername(),dataSourceList.getPassword());
        if (result){
            dataSourceListMapper.insertSelective(dataSourceList);
@@ -90,7 +78,6 @@ public class DataSourceListController {
 
            //查询用户所有数据源
            DataSourceList dataSourceList2= new DataSourceList();
-           /*dataSourceList2.setUserId(users.getId());*/
            List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList2);
            model.addAttribute("dataSourceLists", dataSourceLists);
            return "dataSourceList/dataSourceList";
@@ -104,11 +91,7 @@ public class DataSourceListController {
     @RequestMapping("/dataSourceList")
     public String dataSourceList(Model model,HttpServletRequest request) {
         //查询用户所有数据源
-      /*  HttpSession session = request.getSession();
-        Users users = (Users) session.getAttribute("user");*/
-        DataSourceList dataSourceList = new DataSourceList();
-       /* dataSourceList.setUserId(users.getId());*/
-        List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList);
+        List<DataSourceList> dataSourceLists = dataSourceListMapper.selectAll();
         model.addAttribute("dataSourceLists", dataSourceLists);
         return "dataSourceList/dataSourceList";
     }
@@ -116,11 +99,7 @@ public class DataSourceListController {
     @RequestMapping("/changeDbKey")
     public String changeDbKey(Model model, HttpServletRequest request) {
         //查询用户所有数据源
-      /*  HttpSession session = request.getSession();
-        Users users = (Users) session.getAttribute("user");*/
-        DataSourceList dataSourceList2= new DataSourceList();
-       /* dataSourceList2.setUserId(users.getId());*/
-        List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList2);
+        List<DataSourceList> dataSourceLists = dataSourceListMapper.selectAll();
         model.addAttribute("dataSourceLists", dataSourceLists);
         String dbKey = request.getParameter("dbKey");
         model.addAttribute("dbKey", dbKey);
@@ -130,10 +109,7 @@ public class DataSourceListController {
     public String delDs(Model model, HttpServletRequest request) {
         String id = request.getParameter("id");
       dataSourceListMapper.deleteByPrimaryKey(Integer.parseInt(id));
-        /*HttpSession session = request.getSession();
-        Users users = (Users) session.getAttribute("user");*/
         DataSourceList dataSourceList = new DataSourceList();
-       /* dataSourceList.setUserId(users.getId());*/
         List<DataSourceList> dataSourceLists = dataSourceListMapper.select(dataSourceList);
         model.addAttribute("dataSourceLists", dataSourceLists);
         return "dataSourceList/dataSourceList";

@@ -1,21 +1,21 @@
-package com.qk365.datadict.service.impl;
+package com.qk365.datadict.common;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.qk365.datadict.dao.EditTableInfoMapper;
 import com.qk365.datadict.dao.MysqlMapper;
 import com.qk365.datadict.po.EditTableInfo;
 import com.qk365.datadict.po.TableInfo;
-import com.qk365.datadict.service.MySqlService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
- * @author 6154876
+ * @author zhaoge
+ * mysql
  */
-@Service
-public class MySqlServiceImpl implements MySqlService {
+@Component("datasource_1")
+public class DataSource_1 implements DataSourceItem {
     @Autowired
     private MysqlMapper mysqlMapper;
     @Autowired
@@ -24,19 +24,39 @@ public class MySqlServiceImpl implements MySqlService {
 
     @Override
     @DS("#dbKey")
-    public List<Map<String, Object>> findTableName(String dbKey,String dbName) {
-        return mysqlMapper.findTableName(dbName);
+    public List<Map<String, Object>> findTableName(String dbKey, String dbName) {
+        return mysqlMapper.findTableName(dbKey);
     }
 
     @Override
     @DS("#dbKey")
-    public List<TableInfo> findTableInfo(String dbKey , String tableName) {
-        return mysqlMapper.findTableInfo(dbKey,tableName);
+    public List<TableInfo> findTableInfo(String tableName,String dbKey) {
+
+        List<TableInfo> list = mysqlMapper.findTableInfo(dbKey, tableName);
+        list.stream().forEach(d -> {
+            d.setExplain(d.getComment());
+            if (d.getPk().equals("PRI")) {
+                d.setPk("1");
+            }
+            if (d.getIdentification().equals("auto_increment")) {
+                d.setIdentification("1");
+            }
+            if (null == d.getDefaultValue()) {
+                d.setDefaultValue("");
+            }
+            if (d.getEmpty().equals("NO")) {
+                d.setEmpty("");
+            } else {
+                d.setEmpty("1");
+            }
+        });
+        return list;
     }
+
 
     @Override
     @DS("#dbKey")
-    public void editTableExplain(String tableName, String explain,String dbKey) {
+    public void editTableExplain(String tableName, String explain,String dbKey, String oldValue) {
         mysqlMapper.editTableExplain(tableName,explain);
     }
 
@@ -48,7 +68,7 @@ public class MySqlServiceImpl implements MySqlService {
 
     @Override
     @DS("#dbKey")
-    public void editColumnExplain(String tableName, String explain, String columnName,String dbKey) {
+    public void editColumnExplain(String tableName, String explain, String columnName,String dbKey,String oldVal) {
         mysqlMapper.editColumnExplain(tableName,explain,columnName);
     }
 
@@ -189,4 +209,7 @@ public class MySqlServiceImpl implements MySqlService {
             return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
         }
     }
+
+
+
 }

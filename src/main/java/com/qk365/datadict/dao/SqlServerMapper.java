@@ -18,7 +18,7 @@ public interface SqlServerMapper {
      * @param id
      * @return
      */
-    List<TableInfo> findTableInfo(@Param("id") Long id);
+    List<TableInfo> findTableInfo(@Param("name") String name);
 
     /**
      * 修改表说明信息

@@ -1,24 +1,26 @@
-package com.qk365.datadict.service;
+package com.qk365.datadict.common;
 
 import com.qk365.datadict.po.TableInfo;
 
 import java.util.List;
 import java.util.Map;
 
-public interface MySqlService {
-
+/**
+ * @author zhaoge
+ */
+public interface DataSourceItem {
     /**
      * 查询数据库表信息
      * @return
      */
-    List<Map<String,Object>> findTableName(String dbKey,String dbName);
+    List<Map<String,Object>> findTableName(String dbKey, String dbName);
 
     /**
      * 查询表字段信息
      * @param id
      * @return
      */
-    List<TableInfo> findTableInfo(String dbKey , String tableName);
+    List<TableInfo> findTableInfo(String tableName,String dbKey);
 
     /**
      * 修改表说明信息
@@ -26,7 +28,7 @@ public interface MySqlService {
      * @param explain
      * @return
      */
-    void editTableExplain(String tableName, String explain, String dbKey);
+    void editTableExplain(String tableName, String explain, String dbKey, String oldValue);
 
     void addTableExplain(String tableName, String explain, String dbKey);
     /**
@@ -36,7 +38,7 @@ public interface MySqlService {
      * @param columnName
      * @return
      */
-    void editColumnExplain(String tableName, String explain, String columnName, String dbKey);
+    void editColumnExplain(String tableName, String explain, String columnName, String dbKey,String oldVal);
 
     void addColumnExplain(String tableName, String explain, String columnName, String dbKey);
 
@@ -50,4 +52,7 @@ public interface MySqlService {
     void insertEditTableInfo(String tableName, String oldVal, String newVal, String column, String type, String dbKey);
 
     String generateEntityClasses(List<TableInfo> list, String tableName, String dbKey);
+
+
+
 }

@@ -6,14 +6,10 @@ import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.view.PoiBaseView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.qk365.datadict.dao.DataSourceListMapper;
 import com.qk365.datadict.dto.*;
-import com.qk365.datadict.po.DataSourceList;
 import com.qk365.datadict.po.TableInfo;
-import com.qk365.datadict.po.Users;
 import com.qk365.datadict.service.CommonService;
-import com.qk365.datadict.service.MySqlService;
-import com.qk365.datadict.service.SqlServerService;
+import com.qk365.datadict.service.DataSourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,13 +36,9 @@ public class TableController {
 
 
     @Autowired
-    private SqlServerService sqlServerService;
-    @Autowired
     private CommonService commonService;
     @Autowired
-    private DataSourceListMapper dataSourceListMapper;
-    @Autowired
-    private MySqlService mySqlService;
+    private DataSourceService dataSourceService;
 
     /**
      * 加载表信息
@@ -56,66 +48,11 @@ public class TableController {
      */
     @GetMapping("/left")
     String left(Model model, HttpServletRequest request) {
-        List<Map<String, Object>> list = new ArrayList<>();
         String dbKey = request.getParameter("dbKey");
-        Users users = (Users) request.getSession().getAttribute("user");
-        //根据dbkey查询数据库类型
-        DataSourceList dataSourceList = new DataSourceList();
-        dataSourceList.setDatabaseName(dbKey);
-      /*  dataSourceList.setUserId(users.getId());*/
-        DataSourceList dataSourceList1 = dataSourceListMapper.selectOne(dataSourceList);
-        //mysql
-        if (dataSourceList1.getType() == 1) {
-            list = mySqlService.findTableName(dbKey, dbKey);
-            if (list != null && list.size() > 0) {
-                list.stream().forEach(dd -> {
-                    dd.put("explain", dd.get("comment"));
-                });
-            }
-        } else if (dataSourceList1.getType() == 2) {
-            //sqlServer
-            list = sqlServerService.findTableName(dbKey);
-        } else if (dataSourceList1.getType() == 3) {
-            //sqLite
-        }
-
-        model.addAttribute("list", list);
+        model.addAttribute("list", dataSourceService.left(dbKey));
         model.addAttribute("dbKey", dbKey);
         return "main/left";
     }
-
-    /**
-     * AJAX加载TABLE
-     *
-     * @return
-     */
-/*    @ResponseBody
-    @RequestMapping(value = "/leftAjax")
-    public ResultVO leftAjax(String dbKey) {
-        List<Map<String, Object>> list = sqlServerService.findTableName(dbKey);
-        //按照开头字母 分组 排序
-        if (list == null || list.size() < 1) {
-            return new ResultVO(1, "无表数据", null);
-        }
-
-        Map<String, List<Map<String, Object>>> tabMap = new HashMap<String, List<Map<String, Object>>>();
-
-        //按照字母分组
-        String firstChar = "";
-        List<Map<String, Object>> charList = null;
-        for (Map<String, Object> map : list) {
-            firstChar = map.get("name").toString().substring(0, 1).toUpperCase();
-            charList = tabMap.get(firstChar);
-            if (charList == null) {
-                charList = new ArrayList<Map<String, Object>>();
-                charList.add(map);
-                tabMap.put(firstChar, charList);
-            } else {
-                charList.add(map);
-            }
-        }
-        return new ResultVO(0, "成功", JSONObject.toJSON(tabMap));
-    }*/
 
     /**
      * 加载列信息
@@ -129,12 +66,8 @@ public class TableController {
                  @PathVariable("id") String id,
                  Model model, String dbKey, HttpServletRequest request) {
         String explain = "请输入表说明";
-        Integer dataType = this.findDbType(dbKey, request);
 
-        //默认表
-        if (dataType == 1) {
-            //mysql
-            List<Map<String, Object>> tableList = mySqlService.findTableName(dbKey, dbKey);
+            List<Map<String, Object>> tableList = dataSourceService.findTableName(dbKey, tablename);
             if (tablename.equals("1") && id.equals("1")) {
                 tablename = tableList.get(0).get("name") + "";
                 id = tableList.get(0).get("id") + "";
@@ -149,47 +82,7 @@ public class TableController {
                 }
             }
 
-        } else if (dataType == 2) {
-            //sqlServer
-            List<Map<String, Object>> tableList = sqlServerService.findTableName(dbKey);
-            if (tablename.equals("1") && id.equals("1")) {
-                tablename = tableList.get(0).get("name") + "";
-                id = tableList.get(0).get("id") + "";
-                explain = tableList.get(0).get("explain") + "";
-            } else {
-                for (Map<String, Object> map : tableList) {
-                    if (map.get("name").equals(tablename)) {
-                        if (map.get("explain") != null && !map.get("explain").equals("")) {
-                            explain = map.get("explain") + "";
-                        }
-                    }
-                }
-            }
-        }
-
-        List<TableInfo> list = new ArrayList<>();
-        if (dataType == 1) {
-            list = mySqlService.findTableInfo(dbKey, tablename);
-            list.stream().forEach(d -> {
-                d.setExplain(d.getComment());
-                if (d.getPk().equals("PRI")) {
-                    d.setPk("1");
-                }
-                if (d.getIdentification().equals("auto_increment")) {
-                    d.setIdentification("1");
-                }
-                if (null == d.getDefaultValue()) {
-                    d.setDefaultValue("");
-                }
-                if (d.getEmpty().equals("NO")) {
-                    d.setEmpty("");
-                } else {
-                    d.setEmpty("1");
-                }
-            });
-        } else if (dataType == 2) {
-            list = sqlServerService.findTableInfo(Long.valueOf(id), dbKey);
-        }
+        List<TableInfo>    list = dataSourceService.findTableInfo(tablename, dbKey);
 
 
         model.addAttribute("list", list);
@@ -218,19 +111,7 @@ public class TableController {
     ) {
 
         String dbKey = request.getParameter("dbKey");
-        Integer dataType = this.findDbType(dbKey, request);
-        if (dataType == 1) {
-            mySqlService.editTableExplain(tableName, explain, dbKey);
-        } else if (dataType == 2) {
-
-            if (oldVal.equals("请输入表说明")){
-                sqlServerService.addTableExplain(tableName,explain,dbKey);
-            }else {
-                sqlServerService.editTableExplain(tableName, explain, dbKey);
-            }
-         /*   sqlServerService.insertEditTableInfo(tableName, oldVal, explain, "", "1", dbKey);*/
-        }
-
+        dataSourceService.editTableExplain(tableName,explain,oldVal,dbKey);
         ResultVO resultVo = new ResultVO(0, "成功", "");
         return resultVo;
     }
@@ -253,18 +134,7 @@ public class TableController {
 
 
 
-        Integer dataType = this.findDbType(dbKey, request);
-        if (dataType == 1) {
-            mySqlService.editColumnExplain(tableName, explain,columnName,dbKey);
-        } else if (dataType == 2) {
-
-            if (oldVal.equals("")){
-                sqlServerService.addColumnExplain(tableName, explain, columnName, dbKey);
-
-            }else {
-                sqlServerService.editColumnExplain(tableName, explain, columnName, dbKey);
-            }
-        }
+        dataSourceService.editColumnExplain(tableName,explain,columnName,oldVal,dbKey);
 
         ResultVO resultVo = new ResultVO(0, "成功", "");
         return resultVo;
@@ -311,13 +181,7 @@ public class TableController {
     @GetMapping("/initList")
     String initList(@RequestParam("id") String id, @RequestParam("tableName") String tableName, Model model
             , @RequestParam("dbKey") String dbKey, HttpServletRequest request) {
-        Integer dataType = this.findDbType(dbKey, request);
-        List<TableInfo> list = new ArrayList<>();
-        if (dataType == 1) {
-            list = mySqlService.findTableInfo(dbKey, tableName);
-        } else if (dataType == 2) {
-            list = sqlServerService.findTableInfo(Long.valueOf(id), dbKey);
-        }
+        List<TableInfo> list = dataSourceService.findTableInfo(tableName, dbKey);
         JSONObject json = null;
         JSONArray array = new JSONArray();
         for (TableInfo table : list) {
@@ -391,13 +255,7 @@ public class TableController {
     ) {
         // 查询列表数据
         String dbKey = request.getParameter("dbKey");
-        Integer dataType = this.findDbType(dbKey, request);
-        List<TableInfo> list = new ArrayList<>();
-        if (dataType == 1) {
-            list = mySqlService.findTableInfo(dbKey, tablename);
-        } else if (dataType == 2) {
-            list = sqlServerService.findTableInfo(Long.valueOf(id), dbKey);
-        }
+        List<TableInfo> list = dataSourceService.findTableInfo(tablename, dbKey);
         List<TableInfoExp> listExp = JSONArray.parseArray(JSONObject.toJSONString(list), TableInfoExp.class);
 
         for (TableInfoExp table : listExp) {
@@ -444,14 +302,10 @@ public class TableController {
                                       ModelMap modelMap, HttpServletRequest request
     ) {
         String dbKey = request.getParameter("dbKey");
-        List<TableInfo> list = new ArrayList<>();
-        Integer dataType = this.findDbType(dbKey, request);
-        if (dataType == 1) {
-            list = mySqlService.findTableInfo(dbKey, tableName);
-        } else if (dataType == 2) {
-            list = sqlServerService.findTableInfo(Long.valueOf(tableId), dbKey);
-        }
-        String result = sqlServerService.generateEntityClasses(list, tableName, dbKey);
+        List<TableInfo> list = dataSourceService.findTableInfo(tableName, dbKey);
+
+
+        String result = dataSourceService.generateEntityClasses(list, tableName, dbKey);
 
         String fileName = getClassNameByTableName(tableName) + ".java";
 
@@ -506,13 +360,4 @@ public class TableController {
         return filename;
     }
 
-    private Integer findDbType(String dbKey, HttpServletRequest request) {
-        //根据dbkey查询数据库类型
-       /* Users users = (Users) request.getSession().getAttribute("user");*/
-        DataSourceList dataSourceList = new DataSourceList();
-        dataSourceList.setDatabaseName(dbKey);
-     /*   dataSourceList.setUserId(users.getId());*/
-        DataSourceList dataSourceList1 = dataSourceListMapper.selectOne(dataSourceList);
-        return dataSourceList1.getType();
-    }
 }

@@ -30,9 +30,6 @@ public class DataSourceList {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "user_id")
-    private Integer userId;
-
     @Column(name = "database_name")
     private String databaseName;
 

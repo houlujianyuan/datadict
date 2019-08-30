@@ -7,14 +7,14 @@
 	    <!--  
 	    select t.name,t.crdate from sysobjects t where xtype='u' ORDER BY t.name
 	    -->
-	    select t.name,CONVERT(NVARCHAR(100),isnull(g.[value],'')) AS explain,t.id  from sysobjects t
+	    select t.name,CONVERT(NVARCHAR(100),isnull(g.[value],'')) AS comment,t.id  from sysobjects t
          left join sys.extended_properties g
          on (t.id = g.major_id AND g.minor_id = 0) 
          where t.xtype='u' ORDER BY t.name;
 	</select>
 	
 	<select id="findTableNameExplain" resultType="java.util.Map">
-	    select  CONVERT(NVARCHAR(100),isnull(g.[value],'')) AS explain  from
+	    select  CONVERT(NVARCHAR(100),isnull(g.[value],'')) AS comment  from
 	     sys.extended_properties g where 
          g.major_id =#{id}  AND g.minor_id = 0 
 	</select>
@@ -69,7 +69,7 @@
         LEFT  JOIN sys.extended_properties epTwo ON obj.id = epTwo.major_id
         AND epTwo.minor_id = 0
         AND epTwo.name = 'MS_Description'
-        WHERE   obj.id = #{id} 
+        WHERE   obj.name = #{name}
         ORDER BY col.colorder ;
 	</select>
 	 
