@@ -9,7 +9,7 @@
 3. 编辑表及字段备注信息
 4. 生成实体类
 5. 导出excel
-6. 筛选数据
+6. 筛选数据(需要点击首页导出按钮左边的表名（笑）)
 ## 预览
 ![image](https://github.com/abeidaren/datadict/blob/master/src/main/resources/static/img/23333.png)
 
