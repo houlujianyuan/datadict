@@ -11,7 +11,7 @@
 5. 导出excel
 6. 筛选数据
 ## 预览
-![image](https://github.com/abeidaren/datadict/tree/master/src/main/resources/static/img/23333.png)
+![image](https://github.com/abeidaren/datadict/blob/master/src/main/resources/static/img/23333.png)
 
-![image](https://github.com/abeidaren/datadict/tree/master/src/main/resources/static/img/244444.png)
+![image](https://github.com/abeidaren/datadict/blob/master/src/main/resources/static/img/244444.png)
 
